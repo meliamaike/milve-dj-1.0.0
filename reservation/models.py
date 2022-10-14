@@ -1,6 +1,14 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
+class Employee(models.Model):
+    name = models.CharField(max_length = 40)
+    age = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Service(models.Model):
     SERVICE_CATEGORIES =(
@@ -8,7 +16,7 @@ class Service(models.Model):
         ('KAPN', 'KAPPING-NAIL'),
         ('ACRN','ACRYLIC-NAIL'),
         ('LIFT','LIFTING-LASHES'),
-        ('EXTE','THREADING-LASHES'),
+        ('EXTE','EXTENSION-LASHES'),
         ('PERF','PERFILADO-CEJAS'),
         ('THRE','THREADING-CEJAS'),
         ('FACI','FACIAL')
@@ -20,3 +28,12 @@ class Service(models.Model):
     def __str__(self):
         return f'{self.category}: {self.duration} mins'
 
+class Booking(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE)
+    service = models.ForeignKey(Service, on_delete = models.CASCADE)
+    check_in = models.DateTimeField()
+    check_out = models.DateTimeField()
+    #employee = models.ForeignKey(Employee, on_delete = models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user} ha reservado {self.service} desde las {self.check_in} a las {self.check_out} .'

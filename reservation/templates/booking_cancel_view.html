@@ -6,10 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room Detail</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"></script>
+    <script src="https://kit.fontawesome.com/692189991f.js" crossorigin="anonymous"></script>
 
     <!-- Main StyleSheet -->
-    <link rel="stylesheet" href="{%static 'reservation/css/service_detail_view.css'%}">
+    <link rel="stylesheet" href="{% static 'reservation/css/service_detail_view.css' %}">
 
 </head>
 
@@ -18,7 +18,7 @@
     <!-- Main Content -->
     <div class="content">
 
-        <!-- Beauty Salon Image -->
+        <!-- Room Image -->
         <div class="image">
             <img
                 src="https://www.gaf-franquicias.com/images/franquicias/2_franquicia_rekoketas.jpg">
@@ -27,11 +27,9 @@
         <!-- Room Details -->
         <div class="room">
 
-            <!-- Div 1: Back to Home  -->
-            
+            <!-- Div 1: Back to Home -->
             <div class="home">
-               
-                <a href="{% url 'reservation:ServiceListView'%}"><i class="fa-solid fa-house">Volver a Servicios</i></a>
+                <a href="{% url 'reservation:ServiceListView' %}"><i class="fas fa-arrow-alt-circle-left">Home</i></a>
             </div>
 
             <!-- Div 2: Room Information -->
@@ -47,22 +45,11 @@
             <form id="booking-form" action="" method="POST">
 
                 {% csrf_token %}
-
+                <h2>Realmente desea cancelar la reserva? Detalles-</h2>
+                <h3>{{booking.get_service_category}} {{booking}}</h3>
                 <!-- Input Div -->
                 <div class="input-div">
-                    <label for="id_check_in">Check In : </label>
-                    <input type="datetime-local" id="id_check_in" name="check_in">
-                </div>
-
-                <!-- Input Div -->
-                <div class="input-div">
-                    <label for="id_check_out">Check Out : </label>
-                    <input type="datetime-local" id="id_check_out" name="check_out">
-                </div>
-
-                <!-- Input Div -->
-                <div class="input-div">
-                    <button type="submit">Reservar</button>
+                    <button type="submit">Cancelar la reserva</button>
                 </div>
 
             </form>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 
 # Create your models here.
 class Employee(models.Model):
@@ -37,3 +38,11 @@ class Booking(models.Model):
 
     def __str__(self):
         return f'{self.user} ha reservado {self.service} desde las {self.check_in} a las {self.check_out} .'
+
+    def get_service_category(self):
+        service_categories= dict(self.service.SERVICE_CATEGORIES)
+        service_category = service_categories.get(self.service.category)
+        return service_category
+    
+    def get_cancel_booking_url(self):
+        return reverse('reservation:CancelBookingView', args=[self.pk, ])

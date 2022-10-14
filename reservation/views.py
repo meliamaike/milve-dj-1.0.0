@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse
-from django.views.generic import ListView, FormView, View
-from django.urls import reverse
+from django.views.generic import ListView, FormView, View, DeleteView
+from django.urls import reverse, reverse_lazy
 from .models import Employee, Booking, Service
 from .forms import AvailabilityForm
 from reservation.booking_functions.availability import check_availability 
@@ -25,7 +25,10 @@ def ServiceListView(request):
 class EmployeeList(ListView):
     model=Employee
 
-class BookingList(ListView):
+class BookingListView(ListView):
+    model=Booking
+    template_name = "booking_list_view.html"
+    
     def get_queryset(self, *args, **kwargs):
         if self.request.user.is_staff:
             booking_list=Booking.objects.all()
@@ -79,28 +82,7 @@ class ServiceDetailView(View):
         else:
             return HttpResponse('Este servicio se encuentra lleno.')
 
-class BookingView(FormView):
-    form_class=AvailabilityForm
-    template_name = 'availability_form.html'
-
-    def form_valid(self, form):
-        data=form.cleaned_data
-        service_list= Service.objects.filter(category = data['service_category'])
-        available_services=[]
-        for s in service_list:
-            if check_availability(s, data['check_in'], data['check_out']):
-                available_services.append(s)
-        
-        if len(available_services)>0:
-            service= available_services[0]
-            booking = Booking.objects.create(
-                user= self.request.user,
-                service=service,
-                check_in = data['check_in'],
-                check_out = data['check_out']
-            )
-            booking.save()
-            return HttpResponse(booking)
-        else:
-            return HttpResponse('Este servicio se encuentra lleno.')
-
+class CancelBookingView(DeleteView):
+    model = Booking
+    template_name = 'booking_cancel_view.html'
+    success_url = reverse_lazy('reservation:BookingListView')

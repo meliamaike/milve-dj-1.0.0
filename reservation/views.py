@@ -4,21 +4,19 @@ from django.urls import reverse, reverse_lazy
 from .models import Employee, Booking, Service
 from .forms import AvailabilityForm
 from reservation.booking_functions.availability import check_availability 
-# Create your views here.
+from reservation.booking_functions.get_service_cat_url_list import get_service_cat_url_list
+from reservation.booking_functions.get_service_category_human_format import get_service_category_human_format
+from reservation.booking_functions.get_available_services import get_available_service
+from reservation.booking_functions.book_service import book_service
+
+#Vistas
 
 def ServiceListView(request):
-    service = Service.objects.all()[0]
-    service_categories=dict(service.SERVICE_CATEGORIES)
-    service_values = service_categories.values()
-    service_list=[]
-    for service_category in service_categories:
-        service = service_categories.get(service_category)
-        service_url= reverse('reservation:ServiceDetailView', 
-                              kwargs={'category':service_category})
-        service_list.append((service,service_url))
+    
+    service_category_url_list = get_service_cat_url_list()
                 
     context={
-        "service_list" : service_list,
+        "service_list" : service_category_url_list
     }
     return render(request, 'service_list_view.html', context)
 
@@ -40,44 +38,42 @@ class BookingListView(ListView):
 class ServiceDetailView(View):
    
     def get(self,request, *args, **kwargs):
+
+        # Traigo las categorias de los servicios a traves de los kwargs
         category = self.kwargs.get('category', None)
-        form=AvailabilityForm()
-        service_list = Service.objects.filter(category=category)
-        
-        if len(service_list)>0:
-            service = service_list[0]
-            service_category=dict(service.SERVICE_CATEGORIES).get(service.category, None)
+        #Traigo formato amigable con el ser humano
+        human_format_service_category = get_service_category_human_format(category)
+        #Inicializo un formulario vacio 
+        form = AvailabilityForm()
+        #Me fijo si se ingresan categorias inavalidas
+        if human_format_service_category is not None:
             context ={
-                'service_category': service_category,
+                'service_category': human_format_service_category,
                 'form' : form
             }
             return render(request, 'service_detail_view.html', context)
         else:
-            return HttpResponse('No existe la categoria')
+            return HttpResponse('No existe la categoria.') 
     
     
     
     def post(self,request, *args, **kwargs):
+         # Traigo las categorias de los servicios a traves de los kwargs
         category = self.kwargs.get('category', None)
-        service_list = Service.objects.filter(category=category)
-        form =AvailabilityForm(request.POST)
+        form = AvailabilityForm(request.POST)
+
+        #Chequea si es valido o no
         if form.is_valid():
-            data=form.cleaned_data
-        
-        available_services=[]
-        for s in service_list:
-            if check_availability(s, data['check_in'], data['check_out']):
-                available_services.append(s)
-        
-        if len(available_services)>0:
-            service= available_services[0]
-            booking = Booking.objects.create(
-                user= self.request.user,
-                service=service,
-                check_in = data['check_in'],
-                check_out = data['check_out']
-            )
-            booking.save()
+            data = form.cleaned_data
+
+        # Trae los servicios disponibles
+        available_services = get_available_service(category, data['check_in'],data['check_out'])
+
+        #Chequea si los servicios estan disponibles 
+        if available_services is not None:
+
+            #Reserva un servicio
+            booking = book_service(request, available_services[0], data['check_in'],data['check_out'] )
             return HttpResponse(booking)
         else:
             return HttpResponse('Este servicio se encuentra lleno.')

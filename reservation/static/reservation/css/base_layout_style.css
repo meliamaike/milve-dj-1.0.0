@@ -1,0 +1,111 @@
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+    background-color: #ffffff;
+    font: 400 15px Lato, sans-serif;
+    line-height: 1.8;
+
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a :hover {
+    color: black;
+}
+
+/* Navbar */
+.navbar navbar-expand-lg bg-light mb-3 {
+    background-color: #ffffff;
+    font-family: Montserrat, sans-serif;
+}
+
+.navbar-brand>img {
+    max-width: 18%;
+    max-height: 18%;
+}
+
+.navbar-brand {
+    padding-top: 0;
+    padding-bottom: 0;
+    display: table-cell;
+    vertical-align: middle;
+    height: 100%;
+}
+
+/* Carousel */
+.carousel-item {
+    width: 100%;
+    /*width you want*/
+    height: 500px;
+    /*height you want*/
+    overflow: hidden;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel-caption h4, h3 {
+    margin-bottom: 194px;
+    font-family: Montserrat, sans-serif;
+}
+
+
+/* Banner */
+
+
+#banner1 {
+    padding: 150px 100px;
+    background-image: url("../img/beauty5.jpg");
+    height: 150%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#banner1 h2 {
+    padding: 25px 0px;
+}
+
+/* Servicios */
+
+#servicios {
+    padding-top: 45px;
+    padding-bottom: 30px;
+    background-color: rgb(205, 153, 207);
+}
+
+#servicios h2{
+    padding-bottom: 45px;
+}
+.thumbnail {
+    padding: 0 0 15px 0;
+    border: none;
+    border-radius: 0;
+}
+
+.thumbnail img {
+    width: 400px;
+    height: 255px;
+    margin-bottom: 10px;
+}
+
+
+/* Login */
+
+#login-seccion, #registrar-seccion, #olvido-seccion, #reset-seccion{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+
+

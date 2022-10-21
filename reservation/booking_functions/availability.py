@@ -1,6 +1,8 @@
-import datetime 
+import datetime
 from reservation.models import Employee, Booking, Service
-def check_availability(service,check_in, check_out):
+
+
+def check_availability(service, check_in, check_out):
     avail_list = []
     booking_list = Booking.objects.filter(service=service)
     for booking in booking_list:

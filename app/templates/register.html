@@ -1,0 +1,66 @@
+{% extends "header.html" %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}         
+
+<!--Registro--> 
+<div class="container py-5">
+	<h1>Registro</h1>
+	<form method="POST">
+		{% csrf_token %}
+		{{register_form|crispy}}                
+		<button class="btn btn-primary" type="submit">Registrarse</button>
+	</form>
+	<p class="text-center">Si ya tenes una cuenta, <a href="/login">ingresa</a>!</p>
+</div>
+
+{% endblock %}
+
+<!-- <form method="POST" action="{% url 'account_signup' %}">
+	{% csrf_token %}
+	 <div class="form-group">
+		 {% comment %} username {% endcomment %}
+		 <label for="username">Korisničko ime</label>
+		 <input type="text" class="form-control" id="username" name="username" placeholder="Unesi korisničko ime"
+			 required>
+		 <!-- email -->
+		 <label for="email">Email adresa</label>
+		 <input type="email" class="form-control" id="email" name="email" placeholder="Unesi email adresu"
+			 aria-describedby="emailHelp" required>
+		 <!-- Ime -->
+		 <label for="first_name">Ime</label>
+		 <input type="text" class="form-control" id="first_name" name="first_name"
+			 placeholder="Unesite svoje ime" required>
+		 <!-- Prezime -->
+		 <label for="last_name">Prezime</label>
+		 <input type="text" class="form-control" id="last_name" name="last_name"
+			 placeholder="Unesite svoje prezime" required>
+		 <!--Mesto-->
+		 <label for="barrio">Mesto</label>
+		 {% comment %} <select placeholder="Izaberite grad" class="form-control form-control" id="barrio" name="barrio">
+		 {% for barrio in form.barrio %}
+			 <option value={{ barrio.id }}>{{ barrio }}</option>
+		 {% endfor %}
+		 </select> {% endcomment %}
+		 {{form.barrio}}
+		 <!--Adresa-->
+		 <label for="address">Adresa</label>
+		 <input type="text" class="form-control" id="address" name="address" placeholder="Unesite adresu"
+			 required>
+		 <!-- Kontakt-->
+		 <label for="cellphone_number">Kontakt telefon</label>
+		 <input type="text" pattern="^[0-9/-]*$" class="form-control" id="cellphone_number" name="cellphone_number" placeholder="Unesite kontakt telefon (samo brojevi, / ili - bez razmaka)" required>
+		 <!--Datum-->
+		 <label for="example-date-input" class="col-form-label">Datum rođenja</label>
+		 {% comment %} <input name="birth" class="form-control" type="date" value="1980-08-19" id="example-date-input"> {% endcomment %}
+		 {{form.birth}}
+		 <!-- password -->
+		 <label for="password1">Lozinka</label>
+		 <input type="password" class="form-control" id="password1" name="password1" required>
+		 <!-- password confirmation -->
+		 <label for="password2">Potvrdite lozinku</label>
+		 <input type="password" class="form-control" id="password2" name="password2" required>
+	 </div>
+	 <input type="submit" class="btn btn-outline-dark btn-custom mt-3" value="Registruj se">
+ </form> -->

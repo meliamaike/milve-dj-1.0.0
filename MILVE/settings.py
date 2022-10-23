@@ -28,11 +28,6 @@ environ.Env.read_env()
 SECRET_KEY = env.str("SECRET_KEY")
 
 
-
-
-
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -63,8 +58,8 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     # My_apps
-    "reservation",
-    "reservation.booking_functions",
+    "app",
+    "app.booking_functions",
     # crispy_forms
     "crispy_forms",
 ]
@@ -156,7 +151,7 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "/reservation/static/"
+STATIC_URL = "/app/static/"
 
 
 # Default primary key field type
@@ -168,9 +163,22 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Custom User
-AUTH_USER_MODEL = "reservation.User"
+AUTH_USER_MODEL = "app.User"
 
-#Pillow
-MEDIA_URL = '/media/'
+# Pillow
+MEDIA_URL = "/media/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+ACCOUNT_FORMS = {"signup": "app.forms.RegistrationForm"}
+
+# Adapter
+ACCOUNT_ADAPTER = "app.adapter.MyAccountAdapter"
+
+#ver
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_AGE = 86400 # sec
+SESSION_COOKIE_DOMAIN = None
+SESSION_COOKIE_NAME = 'DSESSIONID'
+SESSION_COOKIE_SECURE = False

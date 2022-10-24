@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Sjango Allauth
+    # Django Allauth
     "django.contrib.sites",
     "allauth",
     "allauth.account",
@@ -175,10 +175,10 @@ ACCOUNT_FORMS = {"signup": "app.forms.RegistrationForm"}
 # Adapter
 ACCOUNT_ADAPTER = "app.adapter.MyAccountAdapter"
 
-#ver
+# ver
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_COOKIE_AGE = 86400 # sec
+SESSION_COOKIE_AGE = 86400  # sec
 SESSION_COOKIE_DOMAIN = None
-SESSION_COOKIE_NAME = 'DSESSIONID'
+SESSION_COOKIE_NAME = "DSESSIONID"
 SESSION_COOKIE_SECURE = False

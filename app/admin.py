@@ -1,15 +1,24 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import UserChangeForm
+
 from .models import Service, Booking, Employee, User
-
-
-# My Custom User
+from .forms import RegistrationForm
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ("email", "username", "first_name", "is_active", "is_staff")
-    ordering = ("-date_joined",)
+# Si pongo UserAdmin hashea la pass, sino no.
+class CustomUserAdmin(admin.ModelAdmin):
+    # add_form = RegistrationForm
+    list_display = (
+        "email",
+        "username",
+        "first_name",
+        "is_active",
+        "is_staff",
+        "is_admin",
+    )
+    ordering = ("date_joined",)
     list_display_links = ("username",)
     list_per_page = 15
     search_fields = (
@@ -26,6 +35,7 @@ class UserAdmin(admin.ModelAdmin):
                 "fields": (
                     "email",
                     "username",
+                    "password",
                     "first_name",
                     "last_name",
                     "birth",
@@ -37,10 +47,13 @@ class UserAdmin(admin.ModelAdmin):
         (
             "Permisos",
             {
-                "fields": ("is_staff", "is_active"),
+                "fields": ("is_staff", "is_active", "is_admin"),
             },
         ),
     )
+
+
+# admin.site.register(User,UserAdmin)
 
 
 # Service

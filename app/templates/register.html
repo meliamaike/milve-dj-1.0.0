@@ -5,7 +5,7 @@
 {% load crispy_forms_tags %}         
 
 <!--Registro--> 
-<div class="container py-5">
+<!-- <div class="container py-5">
 	<h1>Registro</h1>
 	<form method="POST">
 		{% csrf_token %}
@@ -13,54 +13,74 @@
 		<button class="btn btn-primary" type="submit">Registrarse</button>
 	</form>
 	<p class="text-center">Si ya tenes una cuenta, <a href="/login">ingresa</a>!</p>
-</div>
+</div> -->
+
+
+
+<section class="h-100" id="registrar-seccion">
+    <div class="container h-100">
+        <div class="row justify-content-sm-center h-100">
+            <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+                <div class="card shadow-lg">
+                    <div class="card-body p-5">
+                        <h1 class="fs-4 card-title fw-bold mb-4">Registrarse</h1>
+                        <!-- <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="name">Nombre</label>
+                                <input id="name" type="text" class="form-control" name="nombre" value="" required autofocus>
+                                <div class="invalid-feedback">
+                                    Se requiere el nombre.	
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="email">E-Mail</label>
+                                <input id="email" type="email" class="form-control" name="email" value="" required>
+                                <div class="invalid-feedback">
+                                    Ingresá un correo electrónico válido
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="password">Contraseña</label>
+                                <input id="password" type="password" class="form-control" name="password" required>
+                                <div class="invalid-feedback">
+                                    <p> Debe tener al menos 8 caracteres</p>
+                                    <p>Debe incluir al menos un número.</p>
+                                    <p>Debe incluir al menos una letra.</p>
+                                    <p>No debe incluir comillas simples o dobles.</p>
+                                </div>
+                            </div>
+
+                            <p class="form-text text-muted mb-3">
+                                Al crear la cuenta confirmo que he leido y aceptado los
+términos y condiciones y la política de privacidad
+                            </p>
+
+                            <div class="align-items-center d-flex">
+                                <button type="submit" class="btn btn-primary ms-auto">
+                                    Registrarse	
+                                </button>
+                            </div>
+                        </form> -->
+						<form method="POST">
+							{% csrf_token %}
+							{{register_form|crispy}}                
+							<button class="btn btn-primary" type="submit">Registrarse</button>
+						</form>
+					</div>
+                    <div class="card-footer py-3 border-0">
+                        <div class="text-center">
+                            Ya tenes una cuenta? <a href="/login" class="text-dark">Ingresá</a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+
 
 {% endblock %}
-
-<!-- <form method="POST" action="{% url 'account_signup' %}">
-	{% csrf_token %}
-	 <div class="form-group">
-		 {% comment %} username {% endcomment %}
-		 <label for="username">Korisničko ime</label>
-		 <input type="text" class="form-control" id="username" name="username" placeholder="Unesi korisničko ime"
-			 required>
-		 <!-- email -->
-		 <label for="email">Email adresa</label>
-		 <input type="email" class="form-control" id="email" name="email" placeholder="Unesi email adresu"
-			 aria-describedby="emailHelp" required>
-		 <!-- Ime -->
-		 <label for="first_name">Ime</label>
-		 <input type="text" class="form-control" id="first_name" name="first_name"
-			 placeholder="Unesite svoje ime" required>
-		 <!-- Prezime -->
-		 <label for="last_name">Prezime</label>
-		 <input type="text" class="form-control" id="last_name" name="last_name"
-			 placeholder="Unesite svoje prezime" required>
-		 <!--Mesto-->
-		 <label for="barrio">Mesto</label>
-		 {% comment %} <select placeholder="Izaberite grad" class="form-control form-control" id="barrio" name="barrio">
-		 {% for barrio in form.barrio %}
-			 <option value={{ barrio.id }}>{{ barrio }}</option>
-		 {% endfor %}
-		 </select> {% endcomment %}
-		 {{form.barrio}}
-		 <!--Adresa-->
-		 <label for="address">Adresa</label>
-		 <input type="text" class="form-control" id="address" name="address" placeholder="Unesite adresu"
-			 required>
-		 <!-- Kontakt-->
-		 <label for="cellphone_number">Kontakt telefon</label>
-		 <input type="text" pattern="^[0-9/-]*$" class="form-control" id="cellphone_number" name="cellphone_number" placeholder="Unesite kontakt telefon (samo brojevi, / ili - bez razmaka)" required>
-		 <!--Datum-->
-		 <label for="example-date-input" class="col-form-label">Datum rođenja</label>
-		 {% comment %} <input name="birth" class="form-control" type="date" value="1980-08-19" id="example-date-input"> {% endcomment %}
-		 {{form.birth}}
-		 <!-- password -->
-		 <label for="password1">Lozinka</label>
-		 <input type="password" class="form-control" id="password1" name="password1" required>
-		 <!-- password confirmation -->
-		 <label for="password2">Potvrdite lozinku</label>
-		 <input type="password" class="form-control" id="password2" name="password2" required>
-	 </div>
-	 <input type="submit" class="btn btn-outline-dark btn-custom mt-3" value="Registruj se">
- </form> -->

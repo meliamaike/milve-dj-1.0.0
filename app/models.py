@@ -124,27 +124,9 @@ def get_default_profile_image():
     return "app\static\app\img\logo2.png"
 
 
+# El error es debido a sobreescribir User
+# si usamos Model.model y hacemos desde 0 las cosas tendria que salir.
 class User(AbstractBaseUser, PermissionsMixin):
-
-    """email = models.EmailField(_('email address'), unique=True)
-    username = models.CharField(max_length=150, unique=True)
-    first_name = models.CharField(max_length=150, blank=True)
-    last_name = models.CharField(max_length=150, blank=True)
-    start_date = models.DateTimeField(default=timezone.now)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-
-    barrio = models.ForeignKey(
-        barrio, on_delete=models.CASCADE, blank=True, null=True
-    )
-    #cellphone_regex = RegexValidator(regex=r"[\d]{3}-[\d]{3}-[\d]{3}", message="Ingresa un numero valido")
-    cellphone_number = models.CharField(max_length=15, blank=True)
-    #cellphone_number = models.CharField(validators = [cellphone_regex],max_length=15, blank=True)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, blank=True, null=True)
-    image = models.ImageField(upload_to=get_profile_image_filepath, null=True, default=get_default_profile_image)
-    address = models.CharField(max_length=50, blank=True)
-    birth = models.DateField(blank=True, null=True)"""
-
     class Meta:
         verbose_name = "user"
 
@@ -158,14 +140,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     first_name = models.CharField(verbose_name="first_name", max_length=30)
-    last_name = models.CharField(max_length=20, verbose_name="last_name",blank=True)
+    last_name = models.CharField(max_length=20, verbose_name="last_name", blank=True)
     cellphone_number = models.CharField(
-        max_length=20, verbose_name="cellphone_number",blank=True
+        max_length=20, verbose_name="cellphone_number", blank=True
     )
     barrio = models.ForeignKey(Barrio, on_delete=models.SET_NULL, blank=True, null=True)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, blank=True, null=True)
     address = models.CharField(max_length=50, verbose_name="address", blank=True)
-    birth = models.DateField(verbose_name="birth",blank=True, null=True)
+    birth = models.DateField(verbose_name="birth", blank=True, null=True)
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
@@ -211,8 +193,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
-
-
 
 
 class ClientManager(BaseUserManager):

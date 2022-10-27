@@ -11,16 +11,13 @@
 }
 
 /* Root CSS */
-* {
+/* * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-}
-/* html{
-    width:100vw;
 } */
+
 body {
-  /* background-color: rgb(46, 47, 48); */
   color: var(--secondary-text-color);
   font-family: "Montserrat";
   max-width: 100vw;
@@ -30,7 +27,7 @@ img {
   max-width: 100%;
 }
 
-.container {
+.container-services {
   display: flex;
   max-width: 100%;
   flex-direction: column;
@@ -48,8 +45,6 @@ h2 {
 
 .landing {
   flex: 1;
-  /* background-image: url(../img/hotel-1.jpg); */
-  /* background-size: cover; */
   width: 100%;
 }
 .landing h1 {
@@ -75,7 +70,7 @@ h2 {
 
 /* Rooms */
 
-#rooms {
+#services {
   background: #f9f9f9;
   border-radius: 11px;
   /* margin: 1rem; */
@@ -88,7 +83,7 @@ h2 {
 }
 
 /* Room Divs */
-.room {
+.services {
   width: 355px;
   background: #ebebeb;
   border-radius: 10px;
@@ -99,16 +94,16 @@ h2 {
   flex: 1;
 }
 
-.room:hover {
+.services:hover {
   background-color: #d4d4d4;
 }
 
 /* Inside Room Divs */
-.room h2 {
+.servicfes h2 {
   font-size: 30px;
   margin: 0.25rem;
 }
-.room p {
+.services p {
   font-size: 18px;
   line-height: 20px;
 }
@@ -118,7 +113,7 @@ a {
 }
 
 @media only screen and (min-width: 768px) {
-  #rooms {
+  #services {
     grid-template-columns: 1fr 1fr;
   }
   html {
@@ -126,7 +121,7 @@ a {
   }
 }
 @media only screen and (min-width: 1300px) {
-  #rooms {
+  #services {
     grid-template-columns: 1fr 1fr 1fr;
   }
   html {
@@ -137,7 +132,7 @@ a {
   }
 }
 @media only screen and (min-width: 1800px) {
-  #rooms {
+  #services {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   }
   html {

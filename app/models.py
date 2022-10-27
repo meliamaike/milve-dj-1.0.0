@@ -50,68 +50,38 @@ class CustomUserManager(BaseUserManager):
         self,
         email,
         username,
-        first_name,
-        last_name,
-        barrio,
-        genre,
-        address,
-        cellphone_number,
-        birth,
         password=None,
     ):
         if not email:
             raise ValueError("Debe ingresar un email.")
         if not username:
             raise ValueError("Debe ingresar un nombre de usuario.")
-        if not first_name:
-            raise ValueError("Debe ingresar un nombre.")
-        if not last_name:
-            raise ValueError("Debe ingresar un apellido.")
-        if not barrio:
-            raise ValueError("Debe elegir un barrio.")
-        if not genre:
-            raise ValueError("Debe elegir un genero.")
-        if not address:
-            raise ValueError("Debe ingresar una direccion.")
-        if not cellphone_number:
-            raise ValueError("Debe ingresar un numero de telefono.")
-        if not birth:
-            raise ValueError("Debe ingresar una fecha de nacimiento.")
 
         user = self.model(
             email=self.normalize_email(email),
             username=username,
-            first_name=first_name,
-            last_name=last_name,
-            barrio=barrio,
-            genre=genre,
-            address=address,
-            cellphone_number=cellphone_number,
-            birth=birth,
             password=password,
         )
-        user.password = make_password(user.password)
-        user.save()
+        user.set_password(password)
+        user.save(using=self._db)
         return user
 
     def create_superuser(
         self,
         email,
         username,
-        first_name,
         password,
     ):
         user = self.model(
             email=self.normalize_email(email),
             password=password,
             username=username,
-            first_name=first_name,
         )
-        user.password = make_password(user.password)
+        user.password = make_password(user.password) #hash password
         user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
-        user.save()
+        user.save(using=self._db)
         return user
 
 
@@ -124,14 +94,9 @@ def get_default_profile_image():
     return "app\static\app\img\logo2.png"
 
 
-# El error es debido a sobreescribir User
-# si usamos Model.model y hacemos desde 0 las cosas tendria que salir.
-class User(AbstractBaseUser, PermissionsMixin):
-    class Meta:
-        verbose_name = "user"
-
-    email = models.EmailField(verbose_name="email", max_length=60, unique=True)
-    username = models.CharField(max_length=30, verbose_name="username", unique=True)
+class User(AbstractBaseUser):
+    username = models.CharField(verbose_name="username", max_length = 50, unique=True)
+    email = models.EmailField(verbose_name="email", max_length=50, unique=True)
     password = models.CharField(verbose_name="password", max_length=256)
     date_joined = models.DateTimeField(verbose_name="dated_joined", auto_now_add=True)
     last_login = models.DateTimeField(verbose_name="last_login", auto_now=True)
@@ -139,43 +104,26 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    first_name = models.CharField(verbose_name="first_name", max_length=30)
-    last_name = models.CharField(max_length=20, verbose_name="last_name", blank=True)
+    first_name = models.CharField(verbose_name="first_name", max_length=30, blank=True,unique=False)
+    last_name = models.CharField(max_length=20, verbose_name="last_name", blank=True,unique=False)
     cellphone_number = models.CharField(
-        max_length=20, verbose_name="cellphone_number", blank=True
+        max_length=20, verbose_name="cellphone_number", blank=True,unique=False
     )
     barrio = models.ForeignKey(Barrio, on_delete=models.SET_NULL, blank=True, null=True)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, blank=True, null=True)
     address = models.CharField(max_length=50, verbose_name="address", blank=True)
     birth = models.DateField(verbose_name="birth", blank=True, null=True)
+    profile_image = models.ImageField(max_length=255, upload_to=get_profile_image_filepath, null=True, blank=True, default=get_default_profile_image)
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = [
         "email",
-        "first_name",
     ]
 
     objects = CustomUserManager()
 
-    def get_absolute_url(self):
-        return "/users/%i/" % (self.pk)
-
-    def __int__(self):
-        return self.id
-
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-        return True
-
-    def get_id(self):
-        return self.id
-
-    def get_profile_image_filename(self):
-        return str(self.image)[str(self.image).index(f"profile_images/{self.pk}/") :]
-
+    #Para saber que roles tienen
     class Role(models.TextChoices):
         ADMIN = "ADMIN", "Admin"
         CLIENT = "CLIENT", "Client"
@@ -185,14 +133,29 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     role = models.CharField(max_length=50, choices=Role.choices)
 
-    def save(self, *arg, **kwargs):
-        # Si el usuario todavia no ha sido creado
-        if not self.pk:
+    def save(self, *args, **kwargs):
+        is_adding = self._state.adding
+        super( ).save(*args, **kwargs)
+        if is_adding:
+            self.save()
+            return super().save(*args, **kwargs)
+        elif not self.pk:
             self.role = self.base_role  # decimos que su rol es el de admin
-            return super().save(*arg, **kwargs)
+            return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username
+
+    def get_profile_image_filename(self):
+        return str(self.profile_image)[str(self.profile_image).index('profile_images/' + str(self.pk) + "/"):]
+
+	# For checking permissions. to keep it simple all admin have ALL permissons
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+	# Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
+    def has_module_perms(self, app_label):
+	    return True
 
 
 class ClientManager(BaseUserManager):

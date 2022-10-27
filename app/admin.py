@@ -19,14 +19,14 @@ class CustomUserAdmin(admin.ModelAdmin):
         "is_admin",
     )
     ordering = ("date_joined",)
-    list_display_links = ("username",)
+    list_display_links = ("email",)
     list_per_page = 15
     search_fields = (
         "email",
         "username",
         "first_name",
     )
-    list_filter = ("email", "username", "first_name", "is_active", "is_staff")
+    list_filter = ("email", "first_name", "is_active", "is_staff")
 
     fieldsets = (
         (

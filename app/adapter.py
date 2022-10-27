@@ -6,10 +6,10 @@ from django import utils
 class MyAccountAdapter(DefaultAccountAdapter):
     def save_user(self, request, user, form, commit=True):
         data = form.cleaned_data
+        user.username = data["username"]
+        user.email = data["email"]
         user.first_name = data["first_name"]
         user.last_name = data["last_name"]
-        user.email = data["email"]
-        user.username = data["username"]
         user.cellphone_number = data["cellphone_number"]
         user.birth = data["birth"]
         user.barrio = data["barrio"]

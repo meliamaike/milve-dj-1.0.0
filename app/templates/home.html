@@ -1,5 +1,6 @@
 {% extends 'header.html' %}
 
+
 {% block title%}Milagros Veliz{% endblock %}
 {% block content %}
 
@@ -15,23 +16,20 @@
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="../../app/static/app/img/beauty1.jpg" class="d-block w-100" alt="...">
+      <img src="../../app/static/app/img/banner01.png" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
-        <h3>Estetica Milagros Veliz</h3>
       </div>
 
     </div>
     <div class="carousel-item">
-      <img src="../../app/static/app/img/beauty2.png" class="d-block w-100" alt="...">
+      <img src="../../app/static/app/img/banner02.png" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
-        <h4>Tu belleza y salud es lo que mas nos importa.</h4>
       </div>
 
     </div>
     <div class="carousel-item">
-      <img src="../../app/static/app/img/beauty3.jpg" class="d-block w-100" alt="...">
+      <img src="../../app/static/app/img/banner03.png" class="d-block w-100" alt="...">
       <div class="carousel-caption d-none d-md-block">
-        <h4>Contamos con mas de 10 años de experiencia</h4>
       </div>
 
     </div>
@@ -44,13 +42,13 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Siguiente</span>
   </button>
-</div>
+</div> 
 
 <!-- secciones -->
 <div class="container-fluid" id="banner1">
   <div class="row">
     <div class="col-sm-8">
-      <h2>¿POR QUE ELEGIRNOS?</h2>
+      <h2>¿POR QUÉ ELEGIRNOS?</h2>
       <p>En nuestro centro de estética en Buenos Aires recibirás la atención que tu salud y belleza merecen, a cargo de
         un equipo de profesionales de la medicina y del área de la salud. El staff de nuestro centro se compone por
         médicos , cosmiatras y esteticistas con la trayectoria y los conocimientos necesarios para ayudarte a que puedas
@@ -90,9 +88,30 @@
     </div>
   </div>
 </div>
-  
-  
-
-
+<!-- {% load crispy_forms_tags %} -->
+<!-- <section class="h-100" id="registrar-seccion">
+  <div class="container h-100">
+      <div class="row justify-content-sm-center h-100">
+          <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+              <div class="card shadow-lg">
+                  <div class="card-body p-5">
+                      <h1 class="fs-4 card-title fw-bold mb-4">Contacto</h1>
+                      <h4>Te invitamos a conocer nuestra propuesta.</h4>
+                        <p>
+                          Somos la solución más eficiente en belleza, cosmética, salud y cuidado personal en Capital Federal. 
+                          Te esperamos para ayudarte a lucir un cuerpo más bello y también más saludable. 
+                        </p>
+                        <form method="POST">
+                          {% csrf_token %}
+                          {{form.as_p}}                
+                          <button class="btn btn-primary" type="submit">Enviar</button>
+                        </form>
+                      </div>
+              </div>
+              
+          </div>
+      </div>
+  </div>
+</section> -->
   {% endblock %}
 

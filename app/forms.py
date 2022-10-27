@@ -2,7 +2,7 @@ from django import forms
 from django.forms import ModelForm, ValidationError
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model, password_validation
-from allauth.account.forms import SignupForm
+from allauth.account.forms import SignupForm,BaseSignupForm
 import datetime
 from app import models as UserModel
 from django.contrib.auth.hashers import make_password
@@ -15,41 +15,14 @@ class AvailabilityForm(forms.Form):
 
 
 class RegistrationForm(SignupForm):
-    username = forms.CharField(max_length=20, label="Nombre de usuario", required=True)
-    email = forms.EmailField(max_length=50, label="Email", required=True)
-    first_name = forms.CharField(max_length=50, label="Nombre", required=True)
-    last_name = forms.CharField(max_length=50, label="Apellido", required=True)
-    cellphone_number = forms.CharField(
-        max_length=20, label="Numero de telefono", required=True
-    )
-    birth = forms.DateField(
-        label="Birthday",
-        required=False,
-        initial=datetime.date.today,
-        widget=forms.DateInput(
-            attrs={"class": "form-control", "id": "example-date-input", "type": "date"}
-        ),
-    )
-    barrio = forms.ModelChoiceField(
-        queryset=UserModel.Barrio.objects.all(),
-        empty_label="Elegi un barrio...",
-        required=True,
-        label="Barrio",
-        widget=forms.Select(attrs={"class": "form-control"}),
-    )
-    genre = forms.ModelChoiceField(
-        queryset=UserModel.Genre.objects.all(),
-        empty_label="Elegi tu genero...",
-        label="Genre",
-        widget=forms.Select(attrs={"class": "form-control"}),
-    )
-    address = forms.CharField(max_length=50, label="Direccion", required=False)
+    username = forms.CharField(max_length=50, label = "Nombre de usuario", required = True)
+    email = forms.EmailField(max_length=50, label="E-mail", required=True)
     password1 = forms.CharField(
         label=_("Contraseña"),
         strip=False,
         widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
         help_text=password_validation.password_validators_help_text_html(),
-    )
+    ) 
     password2 = forms.CharField(
         label=_("Confirma tu contraseña"),
         widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
@@ -62,17 +35,11 @@ class RegistrationForm(SignupForm):
         fields = (
             "username",
             "email",
-            "first_name",
-            "last_name",
-            "cellphone_number",
-            "birth",
-            "barrio",
-            "genre",
-            "address",
             "password1",
             "password2",
         )
 
+    
     def save(self, request):
         user = super(RegistrationForm, self).save(request)
         user.username = self.cleaned_data["username"]
@@ -86,3 +53,9 @@ class RegistrationForm(SignupForm):
         # user.set_password(self.cleaned_data["password1"])
         user.save()
         return user
+
+class ContactForm(forms.Form):
+	first_name = forms.CharField(max_length = 50)
+	last_name = forms.CharField(max_length = 50)
+	email = forms.EmailField(max_length = 150)
+	message = forms.CharField(widget = forms.Textarea, max_length = 2000)

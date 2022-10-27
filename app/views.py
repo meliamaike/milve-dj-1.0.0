@@ -3,7 +3,7 @@ from django.views.generic import ListView, FormView, View, DeleteView
 
 from django.urls import reverse, reverse_lazy
 from .models import Employee, Booking, Service, User
-from .forms import AvailabilityForm, RegistrationForm
+from .forms import AvailabilityForm, RegistrationForm,ContactForm
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib import messages
@@ -25,7 +25,7 @@ from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
-
+from django.contrib import messages
 
 # Vistas
 
@@ -54,10 +54,8 @@ def login_request(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
-
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
-
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(
@@ -68,24 +66,23 @@ def login_request(request):
                 messages.info(request, f"Hola {username}.")
                 return redirect("/")
             else:
-                messages.error(request, "Usuario o contraseña incorrectos.")
+                messages.error(request, "E-mail o contraseña incorrectos.")
         else:
-            messages.error(request, "Usuario o contraseña incorrectos.")
+            messages.error(request, "E-mail o contraseña incorrectos.")
     form = AuthenticationForm()
     return render(
         request=request, template_name="login.html", context={"login_form": form}
     )
 
-
+#Cerrar sesion
 def logout_request(request):
     logout(request)
     messages.info(request, "Ha cerrado sesion correctamente.")
     return redirect("/")
 
-
+def homepage(request):
+	return render (request=request, template_name="home.html")
 # Olvido de contraseña
-
-
 def password_reset_request(request):
     if request.method == "POST":
         password_reset_form = PasswordResetForm(request.POST)
@@ -115,8 +112,10 @@ def password_reset_request(request):
                             fail_silently=False,
                         )
                     except BadHeaderError:
-                        return HttpResponse("Invalid header found.")
-                    return redirect("/password_reset/done/")
+                        return HttpResponse("Se encontro una cabecera invalida..")
+                    #return redirect("/password_reset/done/")
+                    messages.success(request, 'A message with reset password instructions has been sent to your inbox.')
+                    return redirect ("app:index")
     password_reset_form = PasswordResetForm()
     return render(
         request=request,
@@ -124,9 +123,30 @@ def password_reset_request(request):
         context={"password_reset_form": password_reset_form},
     )
 
-
 def RegisterView(request):
     return render(request, "register.html")
+
+def contact(request):
+	if request.method == 'POST':
+		form = ContactForm(request.POST)
+		if form.is_valid():
+			subject = "Website Inquiry" 
+			body = {
+			'Nombre': form.cleaned_data['first_name'], 
+			'Apellido': form.cleaned_data['last_name'], 
+			'E-mail': form.cleaned_data['email'], 
+			'Mensaje':form.cleaned_data['message'], 
+			}
+			message = "\n".join(body.values())
+
+			try:
+				send_mail(subject, message, 'hola@milve.com', ['admin@example.com']) 
+			except BadHeaderError:
+				return HttpResponse('Se encontro una cabecera invalida.')
+			return redirect ("index")
+      
+	form = ContactForm()
+	return render(request, "home.html", {'form':form})
 
 
 def ServiceListView(request):

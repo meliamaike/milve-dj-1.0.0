@@ -10,6 +10,7 @@ from .views import (
     ServiceDetailView,
     CancelBookingView,
     password_reset_request,
+    contact,
 )
 
 app_name = "app"
@@ -20,6 +21,7 @@ urlpatterns = [
     path("register/", register_request, name="RegisterView"),
     path("login/", login_request, name="LoginView"),
     path("password_reset/", password_reset_request, name="password_reset"),
+    path("", contact, name="contact"),
     path("employee_list/", EmployeeList.as_view(), name="EmployeeList"),
     path("service_list/", ServiceListView, name="ServiceListView"),
     path("booking_list/", BookingListView.as_view(), name="BookingListView"),

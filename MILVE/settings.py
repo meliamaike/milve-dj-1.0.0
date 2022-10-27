@@ -14,6 +14,7 @@ from pathlib import Path
 import opcode
 import environ
 import os
+from django.contrib.messages import constants as messages
 
 env = environ.Env(
     # set casting, default value
@@ -62,6 +63,8 @@ INSTALLED_APPS = [
     "app.booking_functions",
     # crispy_forms
     "crispy_forms",
+    #agenda
+    'django_agenda',
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -107,12 +110,26 @@ WSGI_APPLICATION = "MILVE.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'milve_db', 
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': '127.0.0.1', 
+        'PORT': '5432',
+    }
+}
+ 
+"""DATABASE_CONNECTION_POOLING = False """
+
+""" DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
-}
+} """
 
 
 # Password validation
@@ -175,10 +192,18 @@ ACCOUNT_FORMS = {"signup": "app.forms.RegistrationForm"}
 # Adapter
 ACCOUNT_ADAPTER = "app.adapter.MyAccountAdapter"
 
-# ver
+# ver borrar?
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 86400  # sec
 SESSION_COOKIE_DOMAIN = None
 SESSION_COOKIE_NAME = "DSESSIONID"
 SESSION_COOKIE_SECURE = False
+
+MESSAGE_TAGS = {
+        messages.DEBUG: 'alert-secondary',
+        messages.INFO: 'alert-info',
+        messages.SUCCESS: 'alert-success',
+        messages.WARNING: 'alert-warning',
+        messages.ERROR: 'alert-danger',
+ }

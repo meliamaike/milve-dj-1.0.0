@@ -5,18 +5,6 @@
 {% load crispy_forms_tags %}         
 
 <!--Registro--> 
-<!-- <div class="container py-5">
-	<h1>Registro</h1>
-	<form method="POST">
-		{% csrf_token %}
-		{{register_form|crispy}}                
-		<button class="btn btn-primary" type="submit">Registrarse</button>
-	</form>
-	<p class="text-center">Si ya tenes una cuenta, <a href="/login">ingresa</a>!</p>
-</div> -->
-
-
-
 <section class="h-100" id="registrar-seccion">
     <div class="container h-100">
         <div class="row justify-content-sm-center h-100">
@@ -24,45 +12,6 @@
                 <div class="card shadow-lg">
                     <div class="card-body p-5">
                         <h1 class="fs-4 card-title fw-bold mb-4">Registrarse</h1>
-                        <!-- <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
-                            <div class="mb-3">
-                                <label class="mb-2 text-muted" for="name">Nombre</label>
-                                <input id="name" type="text" class="form-control" name="nombre" value="" required autofocus>
-                                <div class="invalid-feedback">
-                                    Se requiere el nombre.	
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="mb-2 text-muted" for="email">E-Mail</label>
-                                <input id="email" type="email" class="form-control" name="email" value="" required>
-                                <div class="invalid-feedback">
-                                    Ingresá un correo electrónico válido
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="mb-2 text-muted" for="password">Contraseña</label>
-                                <input id="password" type="password" class="form-control" name="password" required>
-                                <div class="invalid-feedback">
-                                    <p> Debe tener al menos 8 caracteres</p>
-                                    <p>Debe incluir al menos un número.</p>
-                                    <p>Debe incluir al menos una letra.</p>
-                                    <p>No debe incluir comillas simples o dobles.</p>
-                                </div>
-                            </div>
-
-                            <p class="form-text text-muted mb-3">
-                                Al crear la cuenta confirmo que he leido y aceptado los
-términos y condiciones y la política de privacidad
-                            </p>
-
-                            <div class="align-items-center d-flex">
-                                <button type="submit" class="btn btn-primary ms-auto">
-                                    Registrarse	
-                                </button>
-                            </div>
-                        </form> -->
 						<form method="POST">
 							{% csrf_token %}
 							{{register_form|crispy}}                
@@ -80,7 +29,4 @@ términos y condiciones y la política de privacidad
         </div>
     </div>
 </section>
-
-
-
 {% endblock %}

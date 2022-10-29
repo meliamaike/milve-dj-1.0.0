@@ -70,10 +70,11 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    ordering = ("check_in", "check_out")
-    search_fields = ("check_in", "check_out")
-    list_filter = ("check_in", "check_out")
+    ordering = ('user','service','date', 'timeslot','employee')
+    search_fields = ('date', 'timeslot','employee')
+    list_filter = ('date', 'timeslot','employee')
     list_per_page = 15
+
 
 
 # Employee

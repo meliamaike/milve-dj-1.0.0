@@ -4,46 +4,61 @@
 {% endblock %}
 
 <body class="d-flex flex-column min-vh-100">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-<a class="navbar-brand" href="/"><img src="../../../app/static/app/img/logo2.png" alt=""></a>
+<nav class="navbar navbar-expand-lg navbar-light">
+<a class="navbar-brand" href="/"><img src="../../../app/static/app/img/logo01.png" alt=""></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="False" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarText">
-    <ul class="navbar-nav mr-auto">
+  <div class="collapse navbar-collapse ml-auto" id="navbarText">
+    
+    <ul class="navbar-nav ml-auto">
       {% if user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link" href="../service_list">Reservar turno</a>
-    </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Cerrar Sesion</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Hola, {{user.username}}</a>
-      </li>
-
+      <div class="collapse navbar-collapse" id="navbarNav3">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="../service_list">Reservar turno</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                Hola, {{user.username}}
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Mi Perfil</a>
+                <a class="dropdown-item" href="#">Mis Reservas</a>
+                <a class="dropdown-item" href="#">Cerrar Sesión</a>
+              </div>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="#">Hola, {{user.username}}</a>
+            </li> -->
+        </ul>
+    </div>
+      
       {% else %}
 
       <div class="collapse navbar-collapse" id="navbarNav1">
         <ul class="navbar-nav">
-            <li class="nav-item">
+            <li class="nav-item px-3">
                 <a class="nav-link" href="/">Inicio</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#banner1">Nosotros</a>
+            <li class="nav-item px-3">
+                <a class="nav-link" href="">Nosotros</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item px-3">
                 <a class="nav-link" href="#servicios">Servicios</a>
             </li>
 
         </ul>
     </div>
     <div class="collapse navbar-collapse" id="navbarNav2">
-      <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
+      <ul class="navbar-nav">
+          <li class="nav-item px-3">
               <a class="nav-link" href="/login">Login</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item px-3">
               <a class="nav-link" href="/register">Registrarse</a>
           </li>
           

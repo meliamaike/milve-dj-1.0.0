@@ -104,7 +104,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    first_name = models.CharField(verbose_name="first_name", max_length=30, blank=True,unique=False)
+    first_name = models.CharField(verbose_name="first_name", max_length=30,blank=True,unique=False)
     last_name = models.CharField(max_length=20, verbose_name="last_name", blank=True,unique=False)
     cellphone_number = models.CharField(
         max_length=20, verbose_name="cellphone_number", blank=True,unique=False
@@ -119,6 +119,7 @@ class User(AbstractBaseUser):
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = [
         "email",
+        "password",
     ]
 
     objects = CustomUserManager()
@@ -219,17 +220,11 @@ class GerenteProfile(models.Model):
 
 
 class Employee(models.Model):
-    """EMPLOYEE_CATEGORIES = (
-        ("milagros", "Milagros"),
-        ("mariana", "Mariana"),
-        ("monica", "Monica"),
-    )"""
-
     employee = models.CharField(_("empleado"), max_length=15)
     age = models.IntegerField(_("edad"))
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.employee}"
 
 
 class Service(models.Model):
@@ -252,15 +247,47 @@ class Service(models.Model):
         return f"{self.category}: {self.duration} mins"
 
 
+
 class Booking(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    check_in = models.DateTimeField()
-    check_out = models.DateTimeField()
+    date = models.DateField(default=timezone.now,help_text="AAAA-MM-DD")
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
+    TIMESLOT_LIST = (
+        (0, '10:00 - 10:30'),
+        (1, '10:30 - 11:00'),
+        (2, '11:00 - 11:30'),
+        (3, '11:30 - 12:00'),
+        (4, '12:00 - 12:30'),
+        (5, '12:30 - 13:00'),
+        (6, '13:00 - 13:30'),
+        (7, '13:30 - 14:00'),
+        (8, '14:00 - 14:30'),
+        (9, '14:30 - 15:00'),
+        (10, '15:00 - 15:30'),
+        (11, '15:30 - 16:00'),
+        (12, '16:00 - 16:30'),
+        (13, '16:30 - 17:00'),
+        (14, '17:00 - 17:30'),
+        (15, '17:30 - 18:00'),
+        (16, '18:00 - 18:30'),
+    )
+
+    timeslot = models.IntegerField(blank=True, null=True, choices=TIMESLOT_LIST)
+    
+    class Meta:
+        unique_together = ('user','date', 'timeslot','employee')
+    
+
     def __str__(self):
-        return f"{self.user} ha reservado {self.service} desde las {self.check_in} a las {self.check_out} ."
+        return '{} {} {}. Cliente: {}'.format(self.date, self.time, self.employee, self.user)
+
+    @property
+    def time(self):
+        return self.TIMESLOT_LIST[self.timeslot][1]
+
+
 
     def get_service_category(self):
         service_categories = dict(self.service.SERVICE_CATEGORIES)

@@ -24,6 +24,7 @@ a :hover {
 .navbar navbar-expand-lg bg-light mb-3 {
     background-color: #ffffff;
     font-family: Montserrat, sans-serif;
+
 }
 
 .navbar-brand>img {
@@ -60,22 +61,6 @@ a :hover {
 }
 
 
-/* Banner */
-
-
-#banner1 {
-    padding: 150px 100px;
-    background-image: url("../img/beauty5.jpg");
-    height: 150%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-#banner1 h2 {
-    padding: 25px 0px;
-}
-
 /* Servicios */
 
 #servicios {
@@ -108,4 +93,11 @@ a :hover {
 }
 
 
+/*Reservar turno */
+
+#contact-seccion{
+    background-image: url("../img/bck02.png");
+    background-repeat: round;
+    max-height: 25%;
+}
 

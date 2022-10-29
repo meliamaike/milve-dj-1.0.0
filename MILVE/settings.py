@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     "crispy_forms",
     #agenda
     'django_agenda',
+    #DateTimeWidget
+    'datetimewidget',
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -77,6 +79,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    #DateTimeWidget
+    "django.middleware.locale.LocaleMiddleware"
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -163,6 +167,8 @@ USE_I18N = True
 USE_TZ = True
 
 SITE_ID = 1
+
+USE_L10N = True
 
 
 # Static files (CSS, JavaScript, Images)

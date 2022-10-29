@@ -7,6 +7,8 @@ import datetime
 from app import models as UserModel
 from django.contrib.auth.hashers import make_password
 from django.utils.translation import gettext_lazy as _
+from .models import Booking
+from datetime import date
 
 
 class AvailabilityForm(forms.Form):
@@ -43,13 +45,13 @@ class RegistrationForm(SignupForm):
     def save(self, request):
         user = super(RegistrationForm, self).save(request)
         user.username = self.cleaned_data["username"]
-        user.first_name = self.cleaned_data["first_name"]
-        user.last_name = self.cleaned_data["last_name"]
-        user.cellphone_number = self.cleaned_data["cellphone_number"]
-        user.birth = self.cleaned_data["birth"]
-        user.barrio = self.cleaned_data["barrio"]
-        user.genre = self.cleaned_data["genre"]
-        user.address = self.cleaned_data["address"]
+        #user.first_name = self.cleaned_data["first_name"]
+        #user.last_name = self.cleaned_data["last_name"]
+        #user.cellphone_number = self.cleaned_data["cellphone_number"]
+        #user.birth = self.cleaned_data["birth"]
+        #user.barrio = self.cleaned_data["barrio"]
+        #user.genre = self.cleaned_data["genre"]
+        #user.address = self.cleaned_data["address"]
         # user.set_password(self.cleaned_data["password1"])
         user.save()
         return user
@@ -59,3 +61,25 @@ class ContactForm(forms.Form):
 	last_name = forms.CharField(max_length = 50)
 	email = forms.EmailField(max_length = 150)
 	message = forms.CharField(widget = forms.Textarea, max_length = 2000)
+    
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+class BookingForm(forms.ModelForm):
+    date = forms.DateField(widget=DateInput)
+
+    class Meta:
+        model = Booking
+        fields = ( 'user','service','employee','date','timeslot',)
+
+
+    def clean_date(self):
+        day = self.cleaned_data['date']
+
+        if day <= date.today():
+            raise forms.ValidationError('Date should be upcoming (tomorrow or later)', code='invalid')
+        if day.isoweekday() in (0, 6):
+            raise forms.ValidationError('Date should be a workday', code='invalid')
+
+        return day

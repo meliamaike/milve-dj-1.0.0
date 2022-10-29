@@ -45,19 +45,8 @@
 </div> 
 
 <!-- secciones -->
-<div class="container-fluid" id="banner1">
-  <div class="row">
-    <div class="col-sm-8">
-      <h2>¿POR QUÉ ELEGIRNOS?</h2>
-      <p>En nuestro centro de estética en Buenos Aires recibirás la atención que tu salud y belleza merecen, a cargo de
-        un equipo de profesionales de la medicina y del área de la salud. El staff de nuestro centro se compone por
-        médicos , cosmiatras y esteticistas con la trayectoria y los conocimientos necesarios para ayudarte a que puedas
-        sentirte y verte mejor.</p>
-    </div>
-    <div class="col-sm-4">
-      <span class="glyphicon glyphicon-signal logo"></span>
-    </div>
-  </div>
+<div class="container-fluid g-0" id="banner04">
+  <img src="../../app/static/app/img/banner04.png" class="d-block w-100" alt="...">
 </div>
 
 <!-- Servicios -->
@@ -88,11 +77,11 @@
     </div>
   </div>
 </div>
-<!-- {% load crispy_forms_tags %} -->
-<!-- <section class="h-100" id="registrar-seccion">
-  <div class="container h-100">
-      <div class="row justify-content-sm-center h-100">
-          <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+{% load crispy_forms_tags %}
+<section class="mh-25 my-auto py-5" id="contact-seccion">
+  <div class="container h-25">
+      <div class="row justify-content-sm-center mh-25">
+          <div class="col-xxl-4 col-xl-12 col-lg-5 col-md-7 col-sm-9">
               <div class="card shadow-lg">
                   <div class="card-body p-5">
                       <h1 class="fs-4 card-title fw-bold mb-4">Contacto</h1>
@@ -103,7 +92,7 @@
                         </p>
                         <form method="POST">
                           {% csrf_token %}
-                          {{form.as_p}}                
+                          {{form|crispy}}                
                           <button class="btn btn-primary" type="submit">Enviar</button>
                         </form>
                       </div>
@@ -112,6 +101,6 @@
           </div>
       </div>
   </div>
-</section> -->
+</section>
   {% endblock %}
 

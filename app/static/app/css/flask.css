@@ -2,6 +2,7 @@
 * {
     box-sizing: border-box;
     /*  font-size: 10px;*/
+    font-family: 'Montserrat', sans-serif;
 }
 
 
@@ -25,7 +26,7 @@ a :hover {
 /* Navbar */
 .navbar navbar-expand-lg bg-light mb-3 {
     background-color: #ffffff;
-    font-family: Montserrat, sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .navbar-brand>img {
@@ -43,9 +44,7 @@ a :hover {
     height: 100%;
 }
 
-#navbarNav1 {
-    margin-right:18em ;
-}
+
 /* Carousel */
 .carousel-item {
     width: 100%;
@@ -66,27 +65,20 @@ a :hover {
 
 /* Banner */
 
-@import url("https://fonts.googleapis.com/css2?family=Charm:wght@700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
-#banner1 {
-    padding: 150px 100px;
-    background-image: url("../img/beauty5.jpg");
-    height: 150%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-}
+
+
 #banner1 h2{
     font-size: 50px;
     font-weight: 600;
     font-family: "Montserrat";
     padding: 25px 0px;
 }
-#banner1 p{
-    font-size: 20px;
-    font-family: "Montserrat";
-}
+
+/* #banner04 {
+    padding-left: 0;
+    padding-right: 0;
+    --bs-gutter-x: 0em !important;
+} */
 
 
 /* Servicios */
@@ -94,11 +86,17 @@ a :hover {
 #servicios {
     padding-top: 45px;
     padding-bottom: 30px;
-    background-image: url('..//img/bck01.png');; 
+    background-image: url('..//img/bck01.png');
+    font-family: 'Montserrat', sans-serif;
+
 }
 
 #servicios h2{
     padding-bottom: 45px;
+    font-size: 35px;
+    font-weight: 600;
+    
+
 }
 .thumbnail {
     padding: 0 0 15px 0;
@@ -115,10 +113,10 @@ a :hover {
 
 /* Login */
 
-#login-seccion, #registrar-seccion, #olvido-seccion, #reset-seccion{
+/* #login-seccion, #registrar-seccion, #olvido-seccion, #reset-seccion{
     margin-top: 50px;
     margin-bottom: 50px;
-}
+} */
 
 /*Footer*/
 

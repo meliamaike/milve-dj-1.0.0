@@ -1,9 +1,8 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import ListView, FormView, View, DeleteView
-
 from django.urls import reverse, reverse_lazy
 from .models import Employee, Booking, Service, User
-from .forms import AvailabilityForm, RegistrationForm,ContactForm
+from .forms import AvailabilityForm, RegistrationForm,ContactForm,BookingForm
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib import messages
@@ -15,6 +14,7 @@ from app.booking_functions.get_service_category_human_format import (
     get_service_category_human_format,
 )
 from app.booking_functions.get_available_services import get_available_service
+from app.booking_functions.book_service import book_service
 
 # Olvido de contrasena
 from django.core.mail import send_mail, BadHeaderError
@@ -31,7 +31,26 @@ from django.contrib import messages
 
 
 def Index(request):
-    return render(request, "home.html")
+	if request.method == 'POST':
+		form = ContactForm(request.POST)
+		if form.is_valid():
+			subject = "Website Inquiry" 
+			body = {
+			'first_name': form.cleaned_data['first_name'], 
+			'last_name': form.cleaned_data['last_name'], 
+			'email': form.cleaned_data['email_address'], 
+			'message':form.cleaned_data['message'], 
+			}
+			message = "\n".join(body.values())
+
+			try:
+				send_mail(subject, message, 'admin@example.com', ['admin@example.com']) 
+			except BadHeaderError:
+				return HttpResponse('Invalid header found.')
+			return redirect ("main:homepage")
+      
+	form = ContactForm()
+	return render(request, "home.html", {'form':form})
 
 
 def register_request(request):
@@ -152,7 +171,6 @@ def contact(request):
 def ServiceListView(request):
 
     service_category_url_list = get_service_cat_url_list()
-
     context = {"service_list": service_category_url_list}
     return render(request, "service_list_view.html", context)
 
@@ -209,7 +227,7 @@ class ServiceDetailView(View):
 
             # Reserva un servicio
             booking = book_service(
-                request, available_services[0], data["check_in"], data["check_out"]
+                request, available_services[0], data["check_in"]
             )
             return HttpResponse(booking)
         else:
@@ -220,3 +238,88 @@ class CancelBookingView(DeleteView):
     model = Booking
     template_name = "booking_cancel_view.html"
     success_url = reverse_lazy("app:BookingListView")
+
+def new_appointment(request):
+    form_booking = BookingForm
+    form= form_booking(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.cleaned_data
+        # Trae los servicios disponibles
+            available_services = get_available_hours(
+                data["date"],
+                data["timeslot"],
+                data["employee"],
+                data["service"],
+                data["user"],          
+            )
+            # Chequea si los servicios estan disponibles
+            if available_services is not None:
+
+                # Reserva un servicio
+                booking = book_service(
+                request, 
+                data["date"],
+                data["timeslot"],
+                data["employee"],
+                data["service"],
+                data["user"],   
+                )
+                #return HttpResponse(booking)
+                form.save()
+                return redirect('/')
+            else:
+                return HttpResponse("Este servicio se encuentra lleno.")
+    return render(
+        request=request,
+        template_name="appointment_form.html",
+        context={"form": form},)
+
+def get_available_hours(date,timeslot,employee_id,service_id,user_id):
+    # Toma la categoria de servicios y devuelve una lista con estos
+    hours_list = Booking.objects.filter(
+                                #date=date,
+                                timeslot=timeslot,
+                                #employee_id=employee_id,
+                                #service_id=service_id,
+                                #user_id=user_id
+                                )
+
+    # Creo una lista vacia
+    available_hours = []
+
+    # Lleno la lista
+    for h in hours_list:
+        if check_availability(date,timeslot,employee_id,service_id,user_id):
+            available_hours.append(h)
+
+    # Chequeo el largo de la lista
+    if len(available_hours) > 0:
+        return available_hours
+    else:
+        return None
+
+
+def check_availability(date,timeslot,employee_id,service_id,user_id):
+    avail_list = []
+    hours_list = Booking.objects.filter(date=date,timeslot=timeslot, employee_id=employee_id,service_id=service_id,user_id=user_id)
+    for h in hours_list:
+        #hay que agregar mas condiciones
+        if h.timeslot==timeslot and h.date==date:
+            avail_list.append(True)
+        else:
+            avail_list.append(False)
+    return all(avail_list)
+
+def book_service(request, date,timeslot,employee_id,service_id,user_id):
+    # Crea un objeto de tipo Booking y lo guarda
+    booking = Booking.objects.create(
+        date=date,
+        timeslot=timeslot,
+        employee_id=1,#harcodeo para ver si entra
+        service_id=1,
+        user_id=2
+    )
+    booking.save()
+
+    return booking

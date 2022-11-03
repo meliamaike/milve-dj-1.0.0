@@ -1,0 +1,70 @@
+{% extends "header.html" %}
+  
+
+{% block content %}
+
+<article class="media content-section">
+    <div class="media-body">
+        <table>
+            <tr>
+                {% if not day.A_booked %}
+              <td><a class='btn btn-success btn-sm btn-block' 
+                href="{% url 'app:session-create-spec' 'A' %}">10:00 - 10:30</a>
+            {% else %}
+                <a class='btn btn-secondary btn-sm btn-block' disabled>BOOKED</a>
+            {% endif %}</td>
+            </tr>
+            <tr>
+              <td>{% if not day.B_booked %}
+                <a class='btn btn-success btn-sm btn-block'
+                    href="{% url 'app:session-create-spec' 'B' %}">10:30 - 11:00</a>
+            {% else %}
+                <a class='btn btn-secondary btn-sm btn-block' disabled>BOOKED</a>
+            {% endif %}</td>
+
+            </tr>
+            <tr>
+                <td>{% if not day.C_booked %}
+                    <a class='btn btn-success btn-sm btn-block'
+                        href="{% url 'app:session-create-spec' 'C' %}">11:00 - 11:30</a>
+                {% else %}
+                    <a class='btn btn-secondary btn-sm btn-block' disabled>BOOKED</a>
+                {% endif %}</td>
+  
+              </tr>
+              <tr>
+                <td>{% if not day.D_booked %}
+                    <a class='btn btn-success btn-sm btn-block'
+                        href="{% url 'app:session-create-spec' 'D' %}">11:30 - 12:00</a>
+                {% else %}
+                    <a class='btn btn-secondary btn-sm btn-block' disabled>BOOKED</a>
+                {% endif %}</td>
+  
+              </tr>
+              <tr>
+                <td>{% if not day.E_booked %}
+                    <a class='btn btn-success btn-sm btn-block'
+                        href="{% url 'app:session-create-spec' 'E' %}">12:00 - 12:30</a>
+                {% else %}
+                    <a class='btn btn-secondary btn-sm btn-block' disabled>BOOKED</a>
+                {% endif %}</td>
+  
+              </tr>
+              <tr>
+                <td>
+                    {% if not day.F_booked %}
+            <a class='btn btn-success btn-sm btn-block'
+                href="{% url 'app:session-create-spec' 'F' %}">12:30 - 13:00</a>
+        {% else %}
+            <a class='btn btn-secondary btn-sm btn-block' disabled>BOOKED</a>
+        {% endif %}
+                </td>
+              </tr>
+          </table>
+        
+    </div>
+</article>
+
+
+
+{% endblock %}

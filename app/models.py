@@ -255,33 +255,33 @@ class Booking(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
     TIMESLOT_LIST = (
-        (0, '10:00 - 10:30'),
-        (1, '10:30 - 11:00'),
-        (2, '11:00 - 11:30'),
-        (3, '11:30 - 12:00'),
-        (4, '12:00 - 12:30'),
-        (5, '12:30 - 13:00'),
-        (6, '13:00 - 13:30'),
-        (7, '13:30 - 14:00'),
-        (8, '14:00 - 14:30'),
-        (9, '14:30 - 15:00'),
-        (10, '15:00 - 15:30'),
-        (11, '15:30 - 16:00'),
-        (12, '16:00 - 16:30'),
-        (13, '16:30 - 17:00'),
-        (14, '17:00 - 17:30'),
-        (15, '17:30 - 18:00'),
-        (16, '18:00 - 18:30'),
+        ("A", '10:00 - 10:30'),
+        ("B", '10:30 - 11:00'),
+        ("C", '11:00 - 11:30'),
+        ("D", '11:30 - 12:00'),
+        ("E", '12:00 - 12:30'),
+        ("F", '12:30 - 13:00'),
+        ("G", '13:00 - 13:30'),
+        ("H", '13:30 - 14:00'),
+        ("I", '14:00 - 14:30'),
+        ("J", '14:30 - 15:00'),
+        ("K", '15:00 - 15:30'),
+        ("L", '15:30 - 16:00'),
+        ("M", '16:00 - 16:30'),
+        ("N", '16:30 - 17:00'),
+        ("O", '17:00 - 17:30'),
+        ("P", '17:30 - 18:00'),
+        ("Q", '18:00 - 18:30'),
     )
 
-    timeslot = models.IntegerField(blank=True, null=True, choices=TIMESLOT_LIST)
+    timeslot = models.CharField(max_length=10,blank=True, null=True, choices=TIMESLOT_LIST, default="Elija el horario")
     
     class Meta:
         unique_together = ('user','date', 'timeslot','employee')
     
 
     def __str__(self):
-        return '{} {} {}. Cliente: {}'.format(self.date, self.time, self.employee, self.user)
+        return '{} {} {} {}. Cliente: {}'.format(self.date, self.service, self.timeslot, self.employee, self.user)
 
     @property
     def time(self):

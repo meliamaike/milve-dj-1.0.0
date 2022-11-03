@@ -10,7 +10,7 @@
                         <h1 class="fs-4 card-title fw-bold mb-4">Reserva tu turno</h1>
 						<form method="POST">
 							{% csrf_token %}
-                            {{ form|crispy}}               
+                            {{ form|crispy}}          
 							<button class="btn btn-primary" type="submit">Reserva</button>
                             <button class="btn btn-secondary" type="reset">Resetear</button>
 						</form>

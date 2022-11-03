@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, register_converter
 from .views import (
     Index,
     register_request,
@@ -11,7 +11,7 @@ from .views import (
     CancelBookingView,
     password_reset_request,
     contact,
-    new_appointment
+    new_appointment,
 )
 
 app_name = "app"

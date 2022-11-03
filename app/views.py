@@ -239,13 +239,45 @@ class CancelBookingView(DeleteView):
     template_name = "booking_cancel_view.html"
     success_url = reverse_lazy("app:BookingListView")
 
+import datetime
+
+
+def generate_daylist():
+    daylist = []
+    today = datetime.date.today()
+    for i in range(7):
+        day = {}
+        curr_day = today + datetime.timedelta(days=i)
+        weekday = curr_day.strftime("%A").upper()
+        day["date"] = str(curr_day)
+        day["day"] = weekday
+        day["A_booked"] = (
+            Booking.objects.filter(date=str(curr_day)).filter(timeslot="A").exists()
+        )
+        day["B_booked"] = (
+        Booking.objects.filter(date=str(curr_day)).filter(timeslot="B").exists()
+        )
+        day["C_booked"] = (
+            Booking.objects.filter(date=str(curr_day)).filter(timeslot="C").exists()
+        )
+        day["D_booked"] = (
+            Booking.objects.filter(date=str(curr_day)).filter(timeslot="D").exists()
+        )
+        day["E_booked"] = (
+            Booking.objects.filter(date=str(curr_day)).filter(timeslot="E").exists()
+        )
+        day["F_booked"] = (
+            Booking.objects.filter(date=str(curr_day)).filter(timeslot="F").exists()
+        )
+    return daylist
+
+
 def new_appointment(request):
     form_booking = BookingForm
-    form= form_booking(request.POST or None)
+    form = form_booking(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
             data = form.cleaned_data
-        # Trae los servicios disponibles
             available_services = get_available_hours(
                 data["date"],
                 data["timeslot"],
@@ -253,10 +285,8 @@ def new_appointment(request):
                 data["service"],
                 data["user"],          
             )
-            # Chequea si los servicios estan disponibles
             if available_services is not None:
 
-                # Reserva un servicio
                 booking = book_service(
                 request, 
                 data["date"],
@@ -276,7 +306,6 @@ def new_appointment(request):
         context={"form": form},)
 
 def get_available_hours(date,timeslot,employee_id,service_id,user_id):
-    # Toma la categoria de servicios y devuelve una lista con estos
     hours_list = Booking.objects.filter(
                                 #date=date,
                                 timeslot=timeslot,
@@ -301,22 +330,49 @@ def get_available_hours(date,timeslot,employee_id,service_id,user_id):
 
 
 def check_availability(date,timeslot,employee_id,service_id,user_id):
-    avail_list = []
-    hours_list = Booking.objects.filter(date=date,timeslot=timeslot, employee_id=employee_id,service_id=service_id,user_id=user_id)
+    """ avail_list = []
+    hours_list = Booking.objects.filter(timeslot=timeslot)
     for h in hours_list:
         #hay que agregar mas condiciones
-        if h.timeslot==timeslot and h.date==date:
+        if h.timeslot!= timeslot and h.date != date:
             avail_list.append(True)
         else:
             avail_list.append(False)
-    return all(avail_list)
+    return all(avail_list) """
+
+    daylist = []
+    today = datetime.date.today()
+    day = {}
+    curr_day = today + datetime.timedelta()
+    weekday = curr_day.strftime("%A").upper()
+    day["date"] = str(curr_day)
+    day["day"] = weekday
+    day["A_booked"] = (
+        Booking.objects.filter(date=str(curr_day)).filter(timeslot="A").exists()
+    )
+    day["B_booked"] = (
+    Booking.objects.filter(date=str(curr_day)).filter(timeslot="B").exists()
+    )
+    day["C_booked"] = (
+        Booking.objects.filter(date=str(curr_day)).filter(timeslot="C").exists()
+    )
+    day["D_booked"] = (
+        Booking.objects.filter(date=str(curr_day)).filter(timeslot="D").exists()
+    )
+    day["E_booked"] = (
+        Booking.objects.filter(date=str(curr_day)).filter(timeslot="E").exists()
+    )
+    day["F_booked"] = (
+        Booking.objects.filter(date=str(curr_day)).filter(timeslot="F").exists()
+        )
+    return daylist
 
 def book_service(request, date,timeslot,employee_id,service_id,user_id):
     # Crea un objeto de tipo Booking y lo guarda
     booking = Booking.objects.create(
         date=date,
         timeslot=timeslot,
-        employee_id=1,#harcodeo para ver si entra
+        employee_id=1,#hardcodeo para ver si entra
         service_id=1,
         user_id=2
     )

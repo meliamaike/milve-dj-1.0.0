@@ -1,1 +1,1 @@
-# milve-dj-1.0.0
+#Beauty salon "Milve" appointment and booking system. 

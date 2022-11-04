@@ -83,3 +83,19 @@ class BookingForm(forms.ModelForm):
             raise forms.ValidationError('Nuestro horario de trabajo es de lunes a viernes de 10:00 a 18:30 horas.', code='invalid')
 
         return day
+
+
+#Interacts with the user model to let users update their username and email.
+class UpdateUserForm(forms.ModelForm):
+    """ username = forms.CharField(max_length=100,
+                               required=True,
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(required=True,
+                             widget=forms.TextInput(attrs={'class': 'form-control'})) """
+
+    birth = forms.DateField(label="Fecha de Nacimiento",required=True,widget=DateInput)
+
+    class Meta:
+        model = get_user_model()
+        fields = ['username', 'email','first_name','last_name','cellphone_number','barrio','genre','address','birth']
+

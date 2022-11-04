@@ -1,8 +1,9 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import ListView, FormView, View, DeleteView
 from django.urls import reverse, reverse_lazy
+from requests import request
 from .models import Employee, Booking, Service, User
-from .forms import AvailabilityForm, RegistrationForm,ContactForm,BookingForm
+from .forms import AvailabilityForm, RegistrationForm,ContactForm,BookingForm, UpdateUserForm
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib import messages
@@ -26,9 +27,15 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.messages.views import SuccessMessageMixin
+
+
+
 
 # Vistas
-
 
 def Index(request):
 	if request.method == 'POST':
@@ -379,3 +386,31 @@ def book_service(request, date,timeslot,employee_id,service_id,user_id):
     booking.save()
 
     return booking
+
+#Mi perfil
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+
+        if user_form.is_valid():
+            user_form.save()
+            messages.success(request, 'Se ha actualizado tu perfil exitosamente.')
+            return redirect('/profile')
+    else:
+        user_form = UpdateUserForm(instance=request.user)
+        
+
+    return render(request, template_name="profile.html", context={'user_form': user_form})
+
+
+
+	
+
+
+#Change Pass from profile
+class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
+    template_name = 'change_password.html'
+    success_message = "Se ha actualizado exitosamente la contraseña."
+    success_url = reverse_lazy('index')

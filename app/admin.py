@@ -39,6 +39,7 @@ class CustomUserAdmin(admin.ModelAdmin):
                     "first_name",
                     "last_name",
                     "birth",
+                    "profile_image",
                     "cellphone_number",
                     "address",
                 )
@@ -53,7 +54,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     )
 
 
-# admin.site.register(User,UserAdmin)
+
 
 
 # Service

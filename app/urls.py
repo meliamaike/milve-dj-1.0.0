@@ -10,8 +10,9 @@ from .views import (
     ServiceDetailView,
     CancelBookingView,
     password_reset_request,
-    contact,
     new_appointment,
+    profile,
+    ChangePasswordView
 )
 
 app_name = "app"
@@ -23,6 +24,11 @@ urlpatterns = [
     path("login/", login_request, name="LoginView"),
     path("password_reset/", password_reset_request, name="password_reset"),
     path('newapo/', new_appointment),
+
+    path('profile/', profile, name='users-profile'),
+    path('password-change/', ChangePasswordView.as_view(), name='password_change'),
+
+
     path("employee_list/", EmployeeList.as_view(), name="EmployeeList"),
     path("service_list/", ServiceListView, name="ServiceListView"),
     path("booking_list/", BookingListView.as_view(), name="BookingListView"),

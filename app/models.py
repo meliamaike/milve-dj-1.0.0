@@ -17,6 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from PIL import Image
 
 
 class Barrio(models.Model):
@@ -86,35 +87,35 @@ class CustomUserManager(BaseUserManager):
 
 
 # Profile pic
-def get_profile_image_filepath(self, filename):
+def get_profile_image_filepath(self):
     return f'profile_images/{self.pk}/{"profile_image.png"}'
 
 
 def get_default_profile_image():
-    return "app\static\app\img\logo2.png"
+	return "empty.png"
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(verbose_name="username", max_length = 50, unique=True)
-    email = models.EmailField(verbose_name="email", max_length=50, unique=True)
-    password = models.CharField(verbose_name="password", max_length=256)
-    date_joined = models.DateTimeField(verbose_name="dated_joined", auto_now_add=True)
-    last_login = models.DateTimeField(verbose_name="last_login", auto_now=True)
-    is_admin = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    first_name = models.CharField(verbose_name="first_name", max_length=30,blank=True,unique=False)
-    last_name = models.CharField(max_length=20, verbose_name="last_name", blank=True,unique=False)
+    username = models.CharField(verbose_name="Nombre de usuario", max_length = 50, unique=True)
+    email = models.EmailField(verbose_name="E-mail", max_length=50, unique=True)
+    password = models.CharField(verbose_name="Contraseña", max_length=256)
+    date_joined = models.DateTimeField(verbose_name="Fecha inicio", auto_now_add=True)
+    last_login = models.DateTimeField(verbose_name="Ultimo inicio sesion", auto_now=True)
+    is_admin = models.BooleanField(verbose_name="Es admin",default=False)
+    is_active = models.BooleanField(verbose_name="Esta activo", default=True)
+    is_staff = models.BooleanField(verbose_name="Es staff", default=False)
+    is_superuser = models.BooleanField(verbose_name="Es superusuario",default=False)
+    first_name = models.CharField(verbose_name="Nombre", max_length=30,blank=True,unique=False)
+    last_name = models.CharField(max_length=20, verbose_name="Apellido", blank=True,unique=False)
     cellphone_number = models.CharField(
-        max_length=20, verbose_name="cellphone_number", blank=True,unique=False
+        max_length=20, verbose_name="Número de teléfono", blank=True,unique=False
     )
-    barrio = models.ForeignKey(Barrio, on_delete=models.SET_NULL, blank=True, null=True)
-    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, blank=True, null=True)
-    address = models.CharField(max_length=50, verbose_name="address", blank=True)
-    birth = models.DateField(verbose_name="birth", blank=True, null=True)
-    profile_image = models.ImageField(max_length=255, upload_to=get_profile_image_filepath, null=True, blank=True, default=get_default_profile_image)
-
+    barrio = models.ForeignKey(Barrio, verbose_name="Barrio", on_delete=models.SET_NULL, blank=True, null=True)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, verbose_name="Género", blank=True, null=True)
+    address = models.CharField(max_length=50, verbose_name="Dirección", blank=True)
+    birth = models.DateField(verbose_name="Fecha de Nacimiento", blank=True, null=True)
+    profile_image = models.ImageField(verbose_name="Foto de perfil",max_length=255, upload_to=get_profile_image_filepath, null=True, blank=True, default=get_default_profile_image)
+    
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = [
@@ -150,13 +151,43 @@ class User(AbstractBaseUser):
     def get_profile_image_filename(self):
         return str(self.profile_image)[str(self.profile_image).index('profile_images/' + str(self.pk) + "/"):]
 
-	# For checking permissions. to keep it simple all admin have ALL permissons
+    # For checking permissions. to keep it simple all admin have ALL permissons
     def has_perm(self, perm, obj=None):
         return self.is_admin
 
 	# Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
     def has_module_perms(self, app_label):
 	    return True
+
+"""
+class Profile(models.Model):
+    
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    avatar = models.ImageField(default='/MILVE/media/empty.png', upload_to='profile_images')
+    bio = models.TextField(default="Esto es una prueba")
+
+    def __str__(self):
+        return self.user.username
+    
+    def save(self, *args, **kwargs):
+        super().save()
+
+        img = Image.open(self.avatar.path)
+
+        if img.height > 100 or img.width > 100:
+            new_img = (100, 100)
+            img.thumbnail(new_img)
+            img.save(self.avatar.path)
+
+
+@receiver(post_save, sender=get_user_model)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=get_user_model)
+def save_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 
 class ClientManager(BaseUserManager):
@@ -177,19 +208,20 @@ class Client(User):
         return "Solo para clientes"
 
 
-@receiver(post_save, sender=Client)
+ @receiver(post_save, sender=Client)
 def create_user_profile(sender, instance, created, **kwargs):
     # Si ha sido creado vamos a ver si su rol es de CLIENT
     if created and instance.role == "CLIENT":
-        ClientProfile.objects.create(user=instance)
+        ClientProfile.objects.create(user=instance) 
 
 
-class ClientProfile(models.Model):
+
+    class ClientProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    client_id = models.IntegerField(null=True, blank=True)
+    client_id = models.IntegerField(null=True, blank=True) 
 
 
-class GerenteManager(BaseUserManager):
+    class GerenteManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)
         return results.filter(role=User.Role.GERENTE)
@@ -197,7 +229,6 @@ class GerenteManager(BaseUserManager):
 
 class Gerente(User):
     base_role = User.Role.GERENTE
-
     gerente = GerenteManager()
 
     class Meta:
@@ -216,7 +247,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 class GerenteProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    gerente_id = models.IntegerField(null=True, blank=True)
+    gerente_id = models.IntegerField(null=True, blank=True) """
 
 
 class Employee(models.Model):

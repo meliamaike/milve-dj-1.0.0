@@ -1,47 +1,48 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% extends "header.html" %}
+{% block content %}      
+{% load crispy_forms_tags %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Detail</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"></script>
+<div class="home">
+               
+    <a href="{% url 'app:ServiceListView'%}"><i class="fa-solid fa-house">Volver a Servicios</i></a>
+</div>
 
-    <!-- Main StyleSheet -->
-    <link rel="stylesheet" href="{%static 'app/css/service_detail_view.css'%}">
-
-</head>
-
+<section class="h-100" id="registrar-seccion">
+    <div class="container h-100">
+        <div class="row justify-content-sm-center h-100">
+            <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-6 col-sm-9">
+                <div class="card shadow-lg">
+                    <div class="card-body p-5">
+                        <h1 class="fs-4 card-title fw-bold mb-4">Reserva tu turno</h1>
+                        <div class="room-info">
+                            <h1>{{service_category}}</h1>
+                        </div>
+						<form method="POST">
+							{% csrf_token %}
+                            {{ form|crispy}}          
+							<button class="btn btn-primary" type="submit">Reserva</button>
+                            <button class="btn btn-secondary" type="reset">Resetear</button>
+						</form>
+					</div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
 <body>
 
     <!-- Main Content -->
     <div class="content">
 
         <!-- Beauty Salon Image -->
-        <div class="image">
-            <img
-                src="https://www.gaf-franquicias.com/images/franquicias/2_franquicia_rekoketas.jpg">
-        </div>
 
         <!-- Room Details -->
         <div class="room">
 
-            <!-- Div 1: Back to Home  -->
             
-            <div class="home">
-               
-                <a href="{% url 'app:ServiceListView'%}"><i class="fa-solid fa-house">Volver a Servicios</i></a>
-            </div>
-
             <!-- Div 2: Room Information -->
-            <div class="room-info">
-                <h1>{{service_category}}</h1>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Id optio rem saepe culpa architecto tempora
-                    numquam debitis reiciendis! Quaerat laudantium consequuntur doloribus quod placeat consectetur
-                    veniam,
-                    rerum repellendus magnam labore. </p>
-            </div>
 
             <!-- Div 3: Room Booking Form -->
             <form id="booking-form" action="" method="POST">

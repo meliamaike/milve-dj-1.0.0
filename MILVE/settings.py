@@ -63,10 +63,6 @@ INSTALLED_APPS = [
     "app.booking_functions",
     # crispy_forms
     "crispy_forms",
-    #agenda
-    'django_agenda',
-    #DateTimeWidget
-    'datetimewidget',
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -79,8 +75,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    #DateTimeWidget
-    "django.middleware.locale.LocaleMiddleware"
+    # DateTimeWidget
+    "django.middleware.locale.LocaleMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -116,16 +112,16 @@ WSGI_APPLICATION = "MILVE.wsgi.application"
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'milve_db', 
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': '127.0.0.1', 
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "milve_db2",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
     }
 }
- 
+
 """DATABASE_CONNECTION_POOLING = False """
 
 """ DATABASES = {
@@ -207,9 +203,9 @@ SESSION_COOKIE_NAME = "DSESSIONID"
 SESSION_COOKIE_SECURE = False
 
 MESSAGE_TAGS = {
-        messages.DEBUG: 'alert-secondary',
-        messages.INFO: 'alert-info',
-        messages.SUCCESS: 'alert-success',
-        messages.WARNING: 'alert-warning',
-        messages.ERROR: 'alert-danger',
- }
+    messages.DEBUG: "alert-secondary",
+    messages.INFO: "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
+}

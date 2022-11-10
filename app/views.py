@@ -2,8 +2,14 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import ListView, FormView, View, DeleteView
 from django.urls import reverse, reverse_lazy
 from requests import request
-from .models import Employee, Booking, Service, User
-from .forms import AvailabilityForm, RegistrationForm,ContactForm,BookingForm, UpdateUserForm
+from .models import  Booking, Service, User, Employee
+from .forms import (
+    AvailabilityForm,
+    RegistrationForm,
+    ContactForm,
+    BookingForm,
+    UpdateUserForm,
+)
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib import messages
@@ -33,32 +39,45 @@ from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 
 
-
-
 # Vistas
 
+
 def Index(request):
-	if request.method == 'POST':
-		form = ContactForm(request.POST)
-		if form.is_valid():
-			subject = "Website Inquiry" 
-			body = {
-			'first_name': form.cleaned_data['first_name'], 
-			'last_name': form.cleaned_data['last_name'], 
-			'email': form.cleaned_data['email_address'], 
-			'message':form.cleaned_data['message'], 
-			}
-			message = "\n".join(body.values())
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = "Website Inquiry"
+            body = {
+                "first_name": form.cleaned_data["first_name"],
+                "last_name": form.cleaned_data["last_name"],
+                "email": form.cleaned_data["email_address"],
+                "message": form.cleaned_data["message"],
+            }
+            message = "\n".join(body.values())
 
-			try:
-				send_mail(subject, message, 'admin@example.com', ['admin@example.com']) 
-			except BadHeaderError:
-				return HttpResponse('Invalid header found.')
-			return redirect ("main:homepage")
-      
-	form = ContactForm()
-	return render(request, "home.html", {'form':form})
+            try:
+                send_mail(subject, message, "admin@example.com", ["admin@example.com"])
+            except BadHeaderError:
+                return HttpResponse("Invalid header found.")
+            return redirect("main:homepage")
 
+    form = ContactForm()
+    return render(request, "home.html", {"form": form})
+
+def details_appointment(request):
+    return render(
+        request=request, template_name="appointment_details.html"
+    )
+
+def cancel_appointment(request):
+    return render(
+        request=request, template_name="appointment_cancel.html"
+    )
+
+def statistics(request):
+    return render(
+        request=request, template_name="statistics.html"
+    )
 
 def register_request(request):
     user = request.user
@@ -100,14 +119,18 @@ def login_request(request):
         request=request, template_name="login.html", context={"login_form": form}
     )
 
-#Cerrar sesion
+
+# Cerrar sesion
 def logout_request(request):
     logout(request)
     messages.info(request, "Ha cerrado sesion correctamente.")
     return redirect("/")
 
+
 def homepage(request):
-	return render (request=request, template_name="home.html")
+    return render(request=request, template_name="home.html")
+
+
 # Olvido de contraseña
 def password_reset_request(request):
     if request.method == "POST":
@@ -139,9 +162,12 @@ def password_reset_request(request):
                         )
                     except BadHeaderError:
                         return HttpResponse("Se encontro una cabecera invalida..")
-                    #return redirect("/password_reset/done/")
-                    messages.success(request, 'A message with reset password instructions has been sent to your inbox.')
-                    return redirect ("app:index")
+                    # return redirect("/password_reset/done/")
+                    messages.success(
+                        request,
+                        "A message with reset password instructions has been sent to your inbox.",
+                    )
+                    return redirect("app:index")
     password_reset_form = PasswordResetForm()
     return render(
         request=request,
@@ -149,30 +175,32 @@ def password_reset_request(request):
         context={"password_reset_form": password_reset_form},
     )
 
+
 def RegisterView(request):
     return render(request, "register.html")
 
-def contact(request):
-	if request.method == 'POST':
-		form = ContactForm(request.POST)
-		if form.is_valid():
-			subject = "Website Inquiry" 
-			body = {
-			'Nombre': form.cleaned_data['first_name'], 
-			'Apellido': form.cleaned_data['last_name'], 
-			'E-mail': form.cleaned_data['email'], 
-			'Mensaje':form.cleaned_data['message'], 
-			}
-			message = "\n".join(body.values())
 
-			try:
-				send_mail(subject, message, 'hola@milve.com', ['admin@example.com']) 
-			except BadHeaderError:
-				return HttpResponse('Se encontro una cabecera invalida.')
-			return redirect ("index")
-      
-	form = ContactForm()
-	return render(request, "home.html", {'form':form})
+def contact(request):
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = "Website Inquiry"
+            body = {
+                "Nombre": form.cleaned_data["first_name"],
+                "Apellido": form.cleaned_data["last_name"],
+                "E-mail": form.cleaned_data["email"],
+                "Mensaje": form.cleaned_data["message"],
+            }
+            message = "\n".join(body.values())
+
+            try:
+                send_mail(subject, message, "hola@milve.com", ["admin@example.com"])
+            except BadHeaderError:
+                return HttpResponse("Se encontro una cabecera invalida.")
+            return redirect("index")
+
+    form = ContactForm()
+    return render(request, "home.html", {"form": form})
 
 
 def ServiceListView(request):
@@ -233,9 +261,7 @@ class ServiceDetailView(View):
         if available_services is not None:
 
             # Reserva un servicio
-            booking = book_service(
-                request, available_services[0], data["check_in"]
-            )
+            booking = book_service(request, available_services[0], data["check_in"])
             return HttpResponse(booking)
         else:
             return HttpResponse("Este servicio se encuentra lleno.")
@@ -245,6 +271,7 @@ class CancelBookingView(DeleteView):
     model = Booking
     template_name = "booking_cancel_view.html"
     success_url = reverse_lazy("app:BookingListView")
+
 
 import datetime
 
@@ -262,7 +289,7 @@ def generate_daylist():
             Booking.objects.filter(date=str(curr_day)).filter(timeslot="A").exists()
         )
         day["B_booked"] = (
-        Booking.objects.filter(date=str(curr_day)).filter(timeslot="B").exists()
+            Booking.objects.filter(date=str(curr_day)).filter(timeslot="B").exists()
         )
         day["C_booked"] = (
             Booking.objects.filter(date=str(curr_day)).filter(timeslot="C").exists()
@@ -281,8 +308,8 @@ def generate_daylist():
 
 def new_appointment(request):
     form_booking = BookingForm
-    form = form_booking(request.POST or None)
-    if request.method == 'POST':
+    form = form_booking(request.POST) # saque el None
+    if request.method == "POST":
         if form.is_valid():
             data = form.cleaned_data
             available_services = get_available_hours(
@@ -290,43 +317,42 @@ def new_appointment(request):
                 data["timeslot"],
                 data["employee"],
                 data["service"],
-                data["user"],          
+                data["user"],
             )
             if available_services is not None:
 
                 booking = book_service(
-                request, 
-                data["date"],
-                data["timeslot"],
-                data["employee"],
-                data["service"],
-                data["user"],   
+                    request,
+                    data["date"],
+                    data["timeslot"],
+                    data["employee"],
+                    data["service"],
+                    data["user"],
                 )
-                #return HttpResponse(booking)
+                # return HttpResponse(booking)
                 form.save()
-                return redirect('/')
+                return redirect("/")
             else:
-                return HttpResponse("Este servicio se encuentra lleno.")
+                return HttpResponse("No hay turnos disponibles.")
     return render(
         request=request,
         template_name="appointment_form.html",
-        context={"form": form},)
+        context={"form": form},
+    )
 
-def get_available_hours(date,timeslot,employee_id,service_id,user_id):
+
+def get_available_hours(date, timeslot):
     hours_list = Booking.objects.filter(
-                                #date=date,
-                                timeslot=timeslot,
-                                #employee_id=employee_id,
-                                #service_id=service_id,
-                                #user_id=user_id
-                                )
+        date=date,
+        timeslot=timeslot,
+    )
 
     # Creo una lista vacia
     available_hours = []
 
     # Lleno la lista
     for h in hours_list:
-        if check_availability(date,timeslot,employee_id,service_id,user_id):
+        if check_availability(date, timeslot):
             available_hours.append(h)
 
     # Chequeo el largo de la lista
@@ -336,8 +362,8 @@ def get_available_hours(date,timeslot,employee_id,service_id,user_id):
         return None
 
 
-def check_availability(date,timeslot,employee_id,service_id,user_id):
-    """ avail_list = []
+def check_availability(date, timeslot):
+    avail_list = []
     hours_list = Booking.objects.filter(timeslot=timeslot)
     for h in hours_list:
         #hay que agregar mas condiciones
@@ -345,9 +371,9 @@ def check_availability(date,timeslot,employee_id,service_id,user_id):
             avail_list.append(True)
         else:
             avail_list.append(False)
-    return all(avail_list) """
+    return all(avail_list)
 
-    daylist = []
+    """ daylist = []
     today = datetime.date.today()
     day = {}
     curr_day = today + datetime.timedelta()
@@ -358,7 +384,7 @@ def check_availability(date,timeslot,employee_id,service_id,user_id):
         Booking.objects.filter(date=str(curr_day)).filter(timeslot="A").exists()
     )
     day["B_booked"] = (
-    Booking.objects.filter(date=str(curr_day)).filter(timeslot="B").exists()
+        Booking.objects.filter(date=str(curr_day)).filter(timeslot="B").exists()
     )
     day["C_booked"] = (
         Booking.objects.filter(date=str(curr_day)).filter(timeslot="C").exists()
@@ -371,46 +397,46 @@ def check_availability(date,timeslot,employee_id,service_id,user_id):
     )
     day["F_booked"] = (
         Booking.objects.filter(date=str(curr_day)).filter(timeslot="F").exists()
-        )
-    return daylist
+    )
+    return daylist """
 
-def book_service(request, date,timeslot,employee_id,service_id,user_id):
+
+def book_service(request, date, timeslot, employee_id, service_id, user_id):
     # Crea un objeto de tipo Booking y lo guarda
     booking = Booking.objects.create(
         date=date,
         timeslot=timeslot,
-        employee_id=1,#hardcodeo para ver si entra
+        employee_id=1,  # hardcodeo para ver si entra
         service_id=1,
-        user_id=2
+        user_id=4,
     )
     booking.save()
 
     return booking
 
-#Mi perfil
+
+# Mi perfil
+
 
 @login_required
 def profile(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         user_form = UpdateUserForm(request.POST, instance=request.user)
 
         if user_form.is_valid():
             user_form.save()
-            messages.success(request, 'Se ha actualizado tu perfil exitosamente.')
-            return redirect('/profile')
+            messages.success(request, "Se ha actualizado tu perfil exitosamente.")
+            return redirect("/profile")
     else:
         user_form = UpdateUserForm(instance=request.user)
-        
 
-    return render(request, template_name="profile.html", context={'user_form': user_form})
-
-
-
-	
+    return render(
+        request, template_name="profile.html", context={"user_form": user_form}
+    )
 
 
-#Change Pass from profile
+# Change Pass from profile
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
-    template_name = 'change_password.html'
+    template_name = "change_password.html"
     success_message = "Se ha actualizado exitosamente la contraseña."
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy("index")

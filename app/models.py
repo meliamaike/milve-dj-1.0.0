@@ -7,9 +7,7 @@ from django.urls import reverse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import (
-    AbstractUser,
     BaseUserManager,
-    PermissionsMixin,
     AbstractBaseUser,
 )
 from django.utils import timezone
@@ -21,29 +19,76 @@ from PIL import Image
 
 
 class Barrio(models.Model):
-    id_barrio = models.AutoField(primary_key=True)
-    barrio = models.CharField(_("barrio"), max_length=50, null=False)
-    comuna = models.IntegerField(_("comuna"), null=False)
+    BARRIO_CATEGORIES = (
+        ("agronomia", "AGRONOMIA (COMUNA 15)"),
+        ("almagro", "ALMAGRO (COMUNA 5)"),
+        ("balvanera", "BALVANERA (COMUNA 3)"),
+        ("barracas", "BARRACAS (COMUNA 4)"),
+        ("belgrano", "BELGRANO (COMUNA 13)"),
+        ("boca", "BOCA (COMUNA 4)"),
+        ("boedo", "BOEDO (COMUNA 5)"),
+        ("caballito", "CABALLITO (COMUNA 6)"),
+        ("chacarita", "CHACARITA (COMUNA 15)"),
+        ("coghlan", "COGHLAN (COMUNA 12)"),
+        ("colegiales", "COLEGIALES (COMUNA 13)"),
+        ("constitucion", "CONSTITUCION (COMUNA 1)"),
+        ("flores", "FLORES (COMUNA 10)"),
+        ("floresta", "FLORESTA (COMUNA 10)"),
+        ("liniers", "LINIERS (COMUNA 9)"),
+        ("mataderos", "MATADEROS (COMUNA 9)"),
+        ("monserrat", "MONTSERRAT (COMUNA 1)"),
+        ("monte-castro", "MONTE CASTRO (COMUNA 10)"),
+        ("nueva-pompeya", "NUEVA POMPEYA (COMUNA 4)"),
+        ("nunez", "NUÑEZ (COMUNA 13)"),
+        ("palermo", "PALERMO (COMUNA 14)"),
+        ("parque-avellaneda", "PARQUE AVELLANEDA (COMUNA 9)"),
+        ("parque-chacabuco", "PARQUE CHACABUCO (COMUNA 7)"),
+        ("parque-chas", "PARQUE CHAS (COMUNA 15)"),
+        ("parque-patricios", "PARQUE PATRICIOS (COMUNA 4)"),
+        ("paternal", "PATERNAL (COMUNA 15)"),
+        ("puerto-madero", "PUERTO MADERO (COMUNA 1)"),
+        ("recoleta", "RECOLETA (COMUNA 2)"),
+        ("retiro", "RETIRO(COMUNA 1)"),
+        ("saavedra", "SAAVEDRA (COMUNA 12)"),
+        ("san-cristobal", "SAN CRISTOBAL (COMUNA 3)"),
+        ("san-nicolas", "SAN NICOLAS (COMUNA 1)"),
+        ("san-telmo", "SAN TELMO (COMUNA 1)"),
+        ("velez-sarfield", "VELEZ SARFIELD (COMUNA 10)"),
+        ("versalles", "VERSALLES (COMUNA 10)"),
+        ("villa-crespo", "VILLA CRESPO (COMUNA 15 )"),
+        ("villa-del-parque", "VILLA DEL PARQUE (COMUNA 11 )"),
+        ("villa-devoto", "VILLA DEVOTO (COMUNA 11 )"),
+        ("villa-gral-mitre", "VILLA GRAL. MITRE (COMUNA 11 )"),
+        ("villa-lugano", "VILLA LUGANO (COMUNA 8 )"),
+        ("villa-luro", "VILLA LURO (COMUNA 10 )"),
+        ("villa-ortuzar", "VILLA ORTUZAR (COMUNA 15 )"),
+        ("villa-pueyrredon", "VILLA PUEYRREDON (COMUNA 12 )"),
+        ("villa-real", "VILLA REAL (COMUNA 10 )"),
+        ("villa-riachuelo", "VILLA RIACHUELO (COMUNA 8 )"),
+        ("villa-santa-rita", "VILLA SANTA RITA (COMUNA 11 )"),
+        ("villa-soldati", "VILLA SOLDATI (COMUNA 8)"),
+        ("villa-urquiza", "VILLA URQUIZA(COMUNA 12 )"),
+    )
 
+    category = models.CharField(max_length=30, choices=BARRIO_CATEGORIES)
+    
     def __str__(self):
-        return f"{self.barrio} - COMUNA {self.comuna}"
+        return {self.category} 
 
 
 class Genre(models.Model):
-    """class Role(models.TextChoices):
+    class Role(models.TextChoices):
         WOMAN = "MUJER", "Mujer"
         MAN = "HOMBRE", "Hombre"
         NA = "NO RESPONDE", "No responde"
 
     base_role = Role.NA
 
-    role = models.CharField(max_length=50, choices=Role.choices)"""
+    role = models.CharField(max_length=50, choices=Role.choices)
 
-    id_genre = models.AutoField(primary_key=True)
-    genre = models.CharField(_("genero"), max_length=50)
-
+    
     def __str__(self):
-        return self.genre
+        return self.role
 
 
 class CustomUserManager(BaseUserManager):
@@ -63,7 +108,7 @@ class CustomUserManager(BaseUserManager):
             username=username,
             password=password,
         )
-        user.set_password(password)
+        user.password = make_password(user.password)
         user.save(using=self._db)
         return user
 
@@ -78,13 +123,12 @@ class CustomUserManager(BaseUserManager):
             password=password,
             username=username,
         )
-        user.password = make_password(user.password) #hash password
+        user.password = make_password(user.password)  # hash password
         user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
-
 
 # Profile pic
 def get_profile_image_filepath(self):
@@ -92,30 +136,47 @@ def get_profile_image_filepath(self):
 
 
 def get_default_profile_image():
-	return "empty.png"
+    return "empty.png"
 
-
-class User(AbstractBaseUser):
-    username = models.CharField(verbose_name="Nombre de usuario", max_length = 50, unique=True)
+from django.contrib.auth.models import PermissionsMixin
+class User(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(
+        verbose_name="Nombre de usuario", max_length=50, unique=True
+    )
     email = models.EmailField(verbose_name="E-mail", max_length=50, unique=True)
     password = models.CharField(verbose_name="Contraseña", max_length=256)
     date_joined = models.DateTimeField(verbose_name="Fecha inicio", auto_now_add=True)
-    last_login = models.DateTimeField(verbose_name="Ultimo inicio sesion", auto_now=True)
-    is_admin = models.BooleanField(verbose_name="Es admin",default=False)
+    last_login = models.DateTimeField(
+        verbose_name="Ultimo inicio sesion", auto_now=True
+    )
+    is_admin = models.BooleanField(verbose_name="Es admin", default=False)
     is_active = models.BooleanField(verbose_name="Esta activo", default=True)
     is_staff = models.BooleanField(verbose_name="Es staff", default=False)
-    is_superuser = models.BooleanField(verbose_name="Es superusuario",default=False)
-    first_name = models.CharField(verbose_name="Nombre", max_length=30,blank=True,unique=False)
-    last_name = models.CharField(max_length=20, verbose_name="Apellido", blank=True,unique=False)
-    cellphone_number = models.CharField(
-        max_length=20, verbose_name="Número de teléfono", blank=True,unique=False
+    is_superuser = models.BooleanField(verbose_name="Es superusuario", default=False)
+    first_name = models.CharField(
+        verbose_name="Nombre", max_length=30, blank=True, unique=False
     )
-    barrio = models.ForeignKey(Barrio, verbose_name="Barrio", on_delete=models.SET_NULL, blank=True, null=True)
-    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, verbose_name="Género", blank=True, null=True)
+    last_name = models.CharField(
+        max_length=30, verbose_name="Apellido", blank=True, unique=False
+    )
+    cellphone_number = models.CharField(
+        max_length=20, verbose_name="Número de teléfono", blank=True, unique=False
+    )
+    barrio = models.ForeignKey(Barrio, on_delete=models.SET_NULL, verbose_name="Barrio", blank=True, null=True)
+    genre = models.ForeignKey(
+        Genre, on_delete=models.SET_NULL, verbose_name="Género", blank=True, null=True
+    ) 
     address = models.CharField(max_length=50, verbose_name="Dirección", blank=True)
     birth = models.DateField(verbose_name="Fecha de Nacimiento", blank=True, null=True)
-    profile_image = models.ImageField(verbose_name="Foto de perfil",max_length=255, upload_to=get_profile_image_filepath, null=True, blank=True, default=get_default_profile_image)
-    
+    profile_image = models.ImageField(
+        verbose_name="Foto de perfil",
+        max_length=255,
+        upload_to=get_profile_image_filepath,
+        null=True,
+        blank=True,
+        default=get_default_profile_image,
+    )
+
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = [
@@ -125,200 +186,96 @@ class User(AbstractBaseUser):
 
     objects = CustomUserManager()
 
-    #Para saber que roles tienen
-    class Role(models.TextChoices):
-        ADMIN = "ADMIN", "Admin"
-        CLIENT = "CLIENT", "Client"
-        GERENTE = "GERENTE", "Gerente"
 
-    base_role = Role.ADMIN
-
-    role = models.CharField(max_length=50, choices=Role.choices)
-
+    # Metodo para guardar todo
     def save(self, *args, **kwargs):
         is_adding = self._state.adding
-        super( ).save(*args, **kwargs)
+        super().save(*args, **kwargs)
         if is_adding:
             self.save()
             return super().save(*args, **kwargs)
         elif not self.pk:
-            self.role = self.base_role  # decimos que su rol es el de admin
             return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username
 
     def get_profile_image_filename(self):
-        return str(self.profile_image)[str(self.profile_image).index('profile_images/' + str(self.pk) + "/"):]
+        return str(self.profile_image)[
+            str(self.profile_image).index("profile_images/" + str(self.pk) + "/") :
+        ]
 
-    # For checking permissions. to keep it simple all admin have ALL permissons
+"""  # Para checkear permisos. Todos los ADMINS tienen TODOS los permisos.
     def has_perm(self, perm, obj=None):
         return self.is_admin
 
-	# Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
+    # Tiene el usuario los permisos para acceder a esta aplicacion?
     def has_module_perms(self, app_label):
-	    return True
+        return True """
 
-"""
-class Profile(models.Model):
-    
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    avatar = models.ImageField(default='/MILVE/media/empty.png', upload_to='profile_images')
-    bio = models.TextField(default="Esto es una prueba")
-
-    def __str__(self):
-        return self.user.username
-    
-    def save(self, *args, **kwargs):
-        super().save()
-
-        img = Image.open(self.avatar.path)
-
-        if img.height > 100 or img.width > 100:
-            new_img = (100, 100)
-            img.thumbnail(new_img)
-            img.save(self.avatar.path)
-
-
-@receiver(post_save, sender=get_user_model)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=get_user_model)
-def save_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
-
-class ClientManager(BaseUserManager):
-    def get_queryset(self, *args, **kwargs):
-        results = super().get_queryset(*args, **kwargs)
-        return results.filter(role=User.Role.CLIENT)
-
-
-class Client(User):
-    base_role = User.Role.CLIENT
-
-    client = ClientManager()
-
-    class Meta:
-        proxy = True
-
-    def welcome(self):
-        return "Solo para clientes"
-
-
- @receiver(post_save, sender=Client)
-def create_user_profile(sender, instance, created, **kwargs):
-    # Si ha sido creado vamos a ver si su rol es de CLIENT
-    if created and instance.role == "CLIENT":
-        ClientProfile.objects.create(user=instance) 
-
-
-
-    class ClientProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    client_id = models.IntegerField(null=True, blank=True) 
-
-
-    class GerenteManager(BaseUserManager):
-    def get_queryset(self, *args, **kwargs):
-        results = super().get_queryset(*args, **kwargs)
-        return results.filter(role=User.Role.GERENTE)
-
-
-class Gerente(User):
-    base_role = User.Role.GERENTE
-    gerente = GerenteManager()
-
-    class Meta:
-        proxy = True
-
-    def welcome(self):
-        return "Solo para gerentes"
-
-
-@receiver(post_save, sender=Gerente)
-def create_user_profile(sender, instance, created, **kwargs):
-    # Si ha sido creado vamos a ver si su rol es de CLIENT
-    if created and instance.role == "GERENTE":
-        GerenteProfile.objects.create(user=instance)
-
-
-class GerenteProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    gerente_id = models.IntegerField(null=True, blank=True) """
-
-
-class Employee(models.Model):
-    employee = models.CharField(_("empleado"), max_length=15)
-    age = models.IntegerField(_("edad"))
-
-    def __str__(self):
-        return f"{self.employee}"
-
-
+#Service
 class Service(models.Model):
     SERVICE_CATEGORIES = (
-        ("geln", "Gel nail"),
-        ("kapn", "Kapping nail"),
-        ("acrn", "Acrylic nail"),
+        ("gel_nail", "Gel nail"),
+        ("kapping_nail", "Kapping nail"),
+        ("acrylic_nail", "Acrylic nail"),
         ("lifting", "Lifting lashes"),
         ("extension", "Extension lashes"),
-        ("perfilado", "Perfilado de cejas"),
-        ("threading", "Threading de cejas"),
+        ("perfilado_cejas", "Perfilado de cejas"),
+        ("threading_cejas", "Threading de cejas"),
         ("facial", "Tratamiento facial"),
     )
 
-    """ category = models.CharField(max_length=10, choices=SERVICE_CATEGORIES) """
-    category = models.CharField(_("categoria"), max_length=50)
+    category = models.CharField(max_length=50, choices=SERVICE_CATEGORIES)
+    """ category = models.CharField(_("categoria"), max_length=50) """
     duration = models.PositiveBigIntegerField(_("duracion"))
 
     def __str__(self):
         return f"{self.category}: {self.duration} mins"
 
 
-
 class Booking(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    date = models.DateField(default=timezone.now,help_text="AAAA-MM-DD")
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    date = models.DateField(default=timezone.now, help_text="DD-MM-AAAA")
 
     TIMESLOT_LIST = (
-        ("A", '10:00 - 10:30'),
-        ("B", '10:30 - 11:00'),
-        ("C", '11:00 - 11:30'),
-        ("D", '11:30 - 12:00'),
-        ("E", '12:00 - 12:30'),
-        ("F", '12:30 - 13:00'),
-        ("G", '13:00 - 13:30'),
-        ("H", '13:30 - 14:00'),
-        ("I", '14:00 - 14:30'),
-        ("J", '14:30 - 15:00'),
-        ("K", '15:00 - 15:30'),
-        ("L", '15:30 - 16:00'),
-        ("M", '16:00 - 16:30'),
-        ("N", '16:30 - 17:00'),
-        ("O", '17:00 - 17:30'),
-        ("P", '17:30 - 18:00'),
-        ("Q", '18:00 - 18:30'),
+        (1, "10:00 - 10:30"),
+        (2, "10:30 - 11:00"),
+        (3, "11:00 - 11:30"),
+        (4, "11:30 - 12:00"),
+        (5, "12:00 - 12:30"),
+        (6, "12:30 - 13:00"),
+        (7, "13:00 - 13:30"),
+        (8, "13:30 - 14:00"),
+        (9, "14:00 - 14:30"),
+        (10, "14:30 - 15:00"),
+        (11, "15:00 - 15:30"),
+        (12, "15:30 - 16:00"),
+        (13, "16:00 - 16:30"),
+        (14, "16:30 - 17:00"),
+        (15, "17:00 - 17:30"),
+        (16, "17:30 - 18:00"),
+        (17, "18:00 - 18:30"),
     )
 
-    timeslot = models.CharField(max_length=10,blank=True, null=True, choices=TIMESLOT_LIST, default="Elija el horario")
-    
+    timeslot = models.IntegerField(
+        null=True,
+        choices=TIMESLOT_LIST,
+        default="Elija el horario",
+    )
+
     class Meta:
-        unique_together = ('user','date', 'timeslot','employee')
-    
+        unique_together = ("user", "date", "timeslot")
 
     def __str__(self):
-        return '{} {} {} {}. Cliente: {}'.format(self.date, self.service, self.timeslot, self.employee, self.user)
+        return "{} {} {} {}. Cliente: {}".format(
+            self.date, self.service, self.timeslot, self.user
+        )
 
     @property
     def time(self):
         return self.TIMESLOT_LIST[self.timeslot][1]
-
-
 
     def get_service_category(self):
         service_categories = dict(self.service.SERVICE_CATEGORIES)
@@ -332,3 +289,16 @@ class Booking(models.Model):
                 self.pk,
             ],
         )
+
+class Employee(models.Model):
+    EMPLOYEE_CATEGORIES = (
+        (1, "Milagros"),
+        (2, "Carolina"),
+        (3, "Monica"),
+    )
+
+    employee = models.IntegerField(null=True, choices=EMPLOYEE_CATEGORIES)
+    age = models.IntegerField()
+
+    def __str__(self):
+        return {self.employee}

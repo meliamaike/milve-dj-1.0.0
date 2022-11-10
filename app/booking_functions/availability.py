@@ -1,5 +1,5 @@
 import datetime
-from app.models import Employee, Booking, Service
+from app.models import Booking, Service
 
 
 def check_availability(service, check_in, check_out):

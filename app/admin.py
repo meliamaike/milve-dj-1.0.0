@@ -2,14 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 
-from .models import Service, Booking, Employee, User
-from .forms import RegistrationForm
+from .models import Service, Booking, User, Employee
 
 
-@admin.register(User)
-# Si pongo UserAdmin hashea la pass, sino no.
-class CustomUserAdmin(admin.ModelAdmin):
-    # add_form = RegistrationForm
+class CustomUserAdmin(UserAdmin):
     list_display = (
         "email",
         "username",
@@ -19,7 +15,7 @@ class CustomUserAdmin(admin.ModelAdmin):
         "is_admin",
     )
     ordering = ("date_joined",)
-    list_display_links = ("email",)
+    list_display_links = ("username",)
     list_per_page = 15
     search_fields = (
         "email",
@@ -53,9 +49,7 @@ class CustomUserAdmin(admin.ModelAdmin):
         ),
     )
 
-
-
-
+admin.site.register(User,CustomUserAdmin)
 
 # Service
 @admin.register(Service)
@@ -71,11 +65,10 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    ordering = ('user','service','date', 'timeslot','employee')
-    search_fields = ('date', 'timeslot','employee')
-    list_filter = ('date', 'timeslot','employee')
+    ordering = ("user", "service", "date", "timeslot")
+    search_fields = ("date", "timeslot")
+    list_filter = ("date", "timeslot")
     list_per_page = 15
-
 
 
 # Employee

@@ -307,112 +307,91 @@ def generate_daylist():
 
 
 def new_appointment(request):
-    form_booking = BookingForm
-    form = form_booking(request.POST) # saque el None
-    if request.method == "POST":
+    turn_form = BookingForm
+    form = turn_form(request.POST or None)
+    if request.method == 'POST':
         if form.is_valid():
             data = form.cleaned_data
-            available_services = get_available_hours(
+            available_day_turn = check_day_availability(
                 data["date"],
-                data["timeslot"],
-                data["employee"],
-                data["service"],
-                data["user"],
             )
-            if available_services is not None:
-
-                booking = book_service(
-                    request,
+            if available_day_turn is True:
+                available_turn = check_availability(
                     data["date"],
                     data["timeslot"],
-                    data["employee"],
-                    data["service"],
-                    data["user"],
                 )
-                # return HttpResponse(booking)
-                form.save()
-                return redirect("/")
+
+                if available_turn is True:
+
+                    print(data["service"].id)
+
+                    book_service(
+                    request, 
+                    data["date"],
+                    data["timeslot"],
+                    data["service"].id,
+                    request.user.id,
+                    )
+                    #form.save()
+                    return redirect('/')
+                else:
+                    return HttpResponse("Este horario esta ocupado!")
             else:
-                return HttpResponse("No hay turnos disponibles.")
+                return HttpResponse("No existen turnos disponibles este dia!")
     return render(
         request=request,
         template_name="appointment_form.html",
         context={"form": form},
     )
 
+from datetime import datetime, timedelta
+def check_day_availability(date):
+    
+    turn_list = Booking.objects.all()
+    cont=0
 
-def get_available_hours(date, timeslot):
-    hours_list = Booking.objects.filter(
-        date=date,
-        timeslot=timeslot,
-    )
-
-    # Creo una lista vacia
-    available_hours = []
-
-    # Lleno la lista
-    for h in hours_list:
-        if check_availability(date, timeslot):
-            available_hours.append(h)
-
-    # Chequeo el largo de la lista
-    if len(available_hours) > 0:
-        return available_hours
+    for t in turn_list:
+        if t.date==date:
+            cont=cont+1
+            
+    if cont == 7:  
+        return False
     else:
-        return None
+        return True
+    
+    
+    
+
+def check_availability(date,timeslot):
+    
+    turn = Booking.objects.all()
+    new_turn= None
+    
+    for t in turn:
+        if t.date==date and t.timeslot == timeslot:
+            new_turn = t
+           
+    
+    if new_turn != None:
+        return False
+    else:
+        return True
 
 
-def check_availability(date, timeslot):
-    avail_list = []
-    hours_list = Booking.objects.filter(timeslot=timeslot)
-    for h in hours_list:
-        #hay que agregar mas condiciones
-        if h.timeslot!= timeslot and h.date != date:
-            avail_list.append(True)
-        else:
-            avail_list.append(False)
-    return all(avail_list)
-
-    """ daylist = []
-    today = datetime.date.today()
-    day = {}
-    curr_day = today + datetime.timedelta()
-    weekday = curr_day.strftime("%A").upper()
-    day["date"] = str(curr_day)
-    day["day"] = weekday
-    day["A_booked"] = (
-        Booking.objects.filter(date=str(curr_day)).filter(timeslot="A").exists()
-    )
-    day["B_booked"] = (
-        Booking.objects.filter(date=str(curr_day)).filter(timeslot="B").exists()
-    )
-    day["C_booked"] = (
-        Booking.objects.filter(date=str(curr_day)).filter(timeslot="C").exists()
-    )
-    day["D_booked"] = (
-        Booking.objects.filter(date=str(curr_day)).filter(timeslot="D").exists()
-    )
-    day["E_booked"] = (
-        Booking.objects.filter(date=str(curr_day)).filter(timeslot="E").exists()
-    )
-    day["F_booked"] = (
-        Booking.objects.filter(date=str(curr_day)).filter(timeslot="F").exists()
-    )
-    return daylist """
-
-
-def book_service(request, date, timeslot, employee_id, service_id, user_id):
+def book_service(request, date, timeslot, service_id, user_id):
     # Crea un objeto de tipo Booking y lo guarda
-    booking = Booking.objects.create(
+
+    print(request.user.id)
+    turn = Booking.objects.create(
         date=date,
         timeslot=timeslot,
-        employee_id=1,  # hardcodeo para ver si entra
-        service_id=1,
-        user_id=4,
+        service_id=service_id,
+        user_id = user_id
+        #user_id= request.user.id
     )
-    booking.save()
+    turn.save()
 
-    return booking
+    return turn
 
 
 # Mi perfil

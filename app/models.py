@@ -269,7 +269,7 @@ class Booking(models.Model):
         unique_together = ("user", "date", "timeslot")
 
     def __str__(self):
-        return "{} {} {} {}. Cliente: {}".format(
+        return "{} {} {} . Cliente: {}".format(
             self.date, self.service, self.timeslot, self.user
         )
 

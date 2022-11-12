@@ -89,13 +89,13 @@ class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = (
-            "user",
+            
             "service",
             "date",
             "timeslot",
         )
         labels = {
-            "user": "Usuario",
+            
             "service": "Servicio",
             "timeslot": "Horario"
         }

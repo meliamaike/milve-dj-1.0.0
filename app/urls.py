@@ -16,7 +16,7 @@ from .views import (
     details_appointment,
     cancel_appointment,
     statistics,
-    all_appointment,
+    AllBookingListView,
 )
 
 app_name = "app"
@@ -28,7 +28,7 @@ urlpatterns = [
     path("login/", login_request, name="LoginView"),
     path("password_reset/", password_reset_request, name="password_reset"),
     path("booking/new/", new_appointment),
-    path("booking/all/", all_appointment),
+    path("booking/all/", AllBookingListView.as_view(), name="AllBookingListView"),
     path("booking/details/", BookingListView.as_view(), name="BookingListView"),
     path("booking/cancel/<pk>", CancelBookingView.as_view(), name="CancelBookingView"),
     path("statistic/", statistics),

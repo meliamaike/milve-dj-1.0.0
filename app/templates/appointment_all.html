@@ -42,12 +42,12 @@
                         <div class="table-responsive">
                           <table summary="" class="table table-bordered table-hover">
                             <thead>
-                              <tr>
+                              <tr style="text-align: center; ">
                                 <th>Ref</th>
                                 <th>Servicio</th>
                                 <th>Fecha</th>
                                 <th>Horario</th>
-                                <th>Duracion</th>
+                                <th>Cliente</th>
                                 <th>Detalles</th>
                               </tr>
                             </thead>
@@ -58,7 +58,7 @@
                                 <td>{{booking.get_service_category}}</td>
                                 <td>{{booking.date}}</td>
                                 <td>{{booking.get_timeslot_display}}</td>
-                                <td>{{booking.service.duration}}</td>
+                                <td>{{booking.user.first_name}} {{booking.user.last_name}}</td>
                                 <td><span class="btn btn-primary"  >
                                   <a style="color:white; font-style: normal !important;" href="{{booking.get_cancel_booking_url}}"><i
                                     class="bi bi-x"> Cancelar</i></a></span>

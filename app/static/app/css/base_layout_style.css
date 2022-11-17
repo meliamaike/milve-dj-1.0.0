@@ -48,9 +48,7 @@ a :hover {
 /* Carousel */
 .carousel-item {
     width: 100%;
-    /*width you want*/
     height: 500px;
-    /*height you want*/
     overflow: hidden;
 }
 

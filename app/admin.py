@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 
-from .models import Service, Booking, User, Employee
+from .models import Service, Booking, User, Employee, Barrio, Genre
 
 
 class CustomUserAdmin(UserAdmin):
@@ -61,8 +61,6 @@ class ServiceAdmin(admin.ModelAdmin):
 
 
 # Booking
-
-
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
     ordering = ("user", "service", "date", "timeslot")
@@ -78,3 +76,17 @@ class EmployeeAdmin(admin.ModelAdmin):
     ordering = ("id",)
     list_display_links = ("employee",)
     list_per_page = 5
+
+@admin.register(Barrio)
+class BarrioAdmin(admin.ModelAdmin):
+    list_display = ("id", "category")
+    ordering = ("id",)
+    list_display_links = ("category",)
+    list_per_page = 15
+
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ("id", "role")
+    ordering = ("id",)
+    list_display_links = ("role",)
+    list_per_page = 15

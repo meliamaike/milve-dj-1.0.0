@@ -212,6 +212,15 @@ class BookingListView(ListView):
             booking_list = Booking.objects.filter(user=self.request.user)
             return booking_list
 
+class AllBookingListView(ListView):
+    model = Booking
+    template_name = "appointment_all.html"
+    def get_queryset(self, *args, **kwargs):
+        if self.request.user.is_staff:
+            booking_list = Booking.objects.all()
+            return booking_list
+        
+
 def details_appointment(request):
     return render(
         request=request, template_name="appointment_details.html"
@@ -368,8 +377,6 @@ def book_service(request, date, timeslot, service_id, user_id):
 
 
 # Mi perfil
-
-
 @login_required
 def profile(request):
     if request.method == "POST":

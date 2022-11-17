@@ -24,10 +24,9 @@
               <p class="text-muted mb-1">{{user.email}}</p>
               <p class="text-muted mb-2">Último Ingreso: {{user.last_login}}</p>
               <div class="d-flex justify-content-center mb-2">
-                {% if user.is_admin %}
+                {% if user.is_staff %}
                 <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/statistic';">Estadisticas</button>
                 <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/booking/all';">Todas las reservas</button>
-
                 {% else %}
                 <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/booking/details';">Mis Reservas</button>
                 <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/booking/new';">Reservar turno</button>
@@ -44,38 +43,17 @@
                           {% csrf_token %}
                           {{ user_form|crispy }}
 
-                          <!-- <label class="requiredField" placeholder="Username">Nombre de usuario: </label>
-                          <input class="form-control" type="text" placeholder="{{user.username}}"disabled>
-                          <label class="requiredField" placeholder="email">E-mail: </label>
-                          <input class="form-control" type="text" placeholder="{{user.email}}"disabled>  -->
-                          <!-- {% if user.birth is not null %}
-                          {{ user_form.first_name|as_crispy_field }}
-                          {{ user_form.last_name|as_crispy_field }}
-                          {{ user_form.cellphone_number|as_crispy_field }}
-                          {{ user_form.barrio|as_crispy_field }}
-                          {{ user_form.genre|as_crispy_field }}
-                          <label class="requiredField" placeholder="Fecha de nacimiento">Fecha de nacimiento</label>
-                          <input class="form-control" type="text" placeholder="{{user.birth}}"disabled>
-                         </div>
-                          {% elif user.birth is null%}
-                          {% csrf_token %}
-                          {{ user_form.first_name|as_crispy_field }}
-                          {{ user_form.last_name|as_crispy_field }}
-                          {{ user_form.cellphone_number|as_crispy_field }}
-                          {{ user_form.barrio|as_crispy_field }}
-                          {{ user_form.genre|as_crispy_field }}
-                          {{ user_form.birth |as_crispy_field }}  
-                        {% endif %} -->
                           
+                          <div class="mb-3">
+                            <div class="d-flex align-items-center">
+                                <button type="submit" class="btn btn-primary ms-4">Guardar cambios</button>
+                                <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/password-change';" style=" background-color:white;font-weight:500;border-width: 1px;border-style: solid; border-color:#ef0aa8; color:black"href="/booking/new/">Modificar contraseña</button>
+                              </div>
+                          </div>   
                     </div>
                 </form>
 
-                <div class="mb-3">
-                  <div class="d-flex align-items-center">
-                      <button type="submit" class="btn btn-primary ms-4">Guardar cambios</button>
-                      <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/password-change';" style=" background-color:white;font-weight:500;border-width: 1px;border-style: solid; border-color:#ef0aa8; color:black"href="/booking/new/">Modificar contraseña</button>
-                    </div>
-                </div>
+                
               </div>
             </div>
           </div>

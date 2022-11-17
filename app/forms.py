@@ -116,7 +116,8 @@ class BookingForm(forms.ModelForm):
         return day
 
 
-# Interacts with the user model to let users update their username and email.
+# Interactua con el modelo User para poder hacer el update de los datos. 
+
 class UpdateUserForm(forms.ModelForm):
 
     birth = forms.DateField(

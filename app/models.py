@@ -73,7 +73,7 @@ class Barrio(models.Model):
     category = models.CharField(max_length=30, choices=BARRIO_CATEGORIES)
     
     def __str__(self):
-        return {self.category} 
+        return str(self.category) 
 
 
 class Genre(models.Model):
@@ -217,14 +217,14 @@ class Service(models.Model):
         ("perfilado_cejas", "Perfilado de cejas"),
         ("threading_cejas", "Threading de cejas"),
         ("facial", "Tratamiento facial"),
+        ("acido_hialuronico", "Acido hialuronico"),
     )
 
     category = models.CharField(max_length=50, choices=SERVICE_CATEGORIES)
     duration = models.PositiveBigIntegerField(_("duracion"))
 
     def __str__(self):
-        return f"{self.category}: {self.duration} mins"
-
+        return f"{self.category}"
 
 class Booking(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -232,23 +232,15 @@ class Booking(models.Model):
     date = models.DateField(default=timezone.now, help_text="DD-MM-AAAA")
 
     TIMESLOT_LIST = (
-        (1, "10:00 - 10:30"),
-        (2, "10:30 - 11:00"),
-        (3, "11:00 - 11:30"),
-        (4, "11:30 - 12:00"),
-        (5, "12:00 - 12:30"),
-        (6, "12:30 - 13:00"),
-        (7, "13:00 - 13:30"),
-        (8, "13:30 - 14:00"),
-        (9, "14:00 - 14:30"),
-        (10, "14:30 - 15:00"),
-        (11, "15:00 - 15:30"),
-        (12, "15:30 - 16:00"),
-        (13, "16:00 - 16:30"),
-        (14, "16:30 - 17:00"),
-        (15, "17:00 - 17:30"),
-        (16, "17:30 - 18:00"),
-        (17, "18:00 - 18:30"),
+        (1, "10:00 - 11:00"),
+        (2, "11:00 - 12:00"),
+        (3, "12:00 - 13:00"),
+        (4, "13:00 - 14:00"),
+        (5, "14:00 - 15:00"),
+        (6, "15:00 - 16:00"),
+        (7, "16:00 - 17:00"),
+        (8, "17:00 - 18:00"),
+        (9, "18:00 - 19:00"),
     )
 
     timeslot = models.IntegerField(

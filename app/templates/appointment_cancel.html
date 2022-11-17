@@ -1,27 +1,43 @@
-{% extends "header.html" %}
+{% extends "base.html" %}
 
 {% block content %} 
+<div class="row">
+    <div class="col">
+      <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item" aria-current="page"><a href="/profile">Mi Perfil</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Cancelar turno</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
 <section class="h-100" id="login-seccion">
     <div class="container h-100">
         <div class="row justify-content-sm-center h-100">
-            <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+            <div class="col-xxl-8 col-xl-6 col-lg-5 col-md-7 col-sm-9">
                 <div class="card shadow-lg">
                     <div class="card-body p-5">
-                        <h1 class="fs-4 card-title fw-bold mb-4">Cancelar reserva</h1>
-                        <p class="m-auto">Realmente desea cancelar el turno?
-                        </p>
-                        
+                        <div class="card-header justify-content-center">
+                            <h3 class="font-weight-light my-4 text-center">¿Realmente desea cancelar el turno?</h3>
+                          </div>
+                        <!-- <h2 class="fs-4 card-title align-items-center fw-bold mb-4"></h2> -->
+                        <form id="booking-form" action="" method="POST">
+                            {% csrf_token %}
+                            <br>
+                            <h5>Servicio: {{booking.get_service_category}}</h5>
+                            <br>
+                            <h5>Fecha: {{booking.date}}</h5>
+                            <br>
+                            <h5>Horario: {{booking.get_timeslot_display}}</h5>
+                            <!-- Input Div -->
                             <div class="d-flex align-items-center">
                                 <button type="submit" class="btn btn-primary ms-auto">
                                     Cancelar
                                 </button>
                             </div>
-                          
+                        </form>                          
                     </div>
-                        
-                    
-                        
-                   
                 </div>
             </div>
         </div>

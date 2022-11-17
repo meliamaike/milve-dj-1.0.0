@@ -1,54 +1,19 @@
-{% extends "header.html" %}
-{% block title %}Profile Page{% endblock title %}
+{% extends "base.html" %}
+{% block title %}Mi perfil{% endblock title %}
 {% block content %}
 {% load crispy_forms_tags %}
-<!-- 
-<section class="h-50" id="login-seccion">
-    <div class="container h-100">
-        <div class="row justify-content-lg-center h-100">
-            <div class="col-xxl-5 col-xl-7 col-lg-7 col-md-7 col-sm-9">
-                <div class="card shadow-lg">
-                    <div class="card-body p-5">
-                        <h1 class="fs-4 card-title fw-bold mb-4">Mi Perfil</h1>
-                        <div class="image-container mx-auto mb-4">
-                        <img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image" alt="img-pic" id="id_profile_image" src="{{user.profile_image.url}}">
-                        </div>
-                        <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
-                            <div class="mb-4">
-                                  {% csrf_token %}
-                                  {{ user_form|crispy}}                                  
-                                  <div class="text-right">
-                                    <a href="{% url 'app:password_change' %}" >Cambiar contraseña?</a>
-                                  </div>
-                                  
-                            </div>
-                            <div class="mb-3">
-                              <div class="d-flex align-items-center">
-                                  <button type="submit" class="btn btn-primary ms-4">Guardar cambios</button>
-                                  <button type="reset" class="btn btn-primary ms-4">Resetear</button>
-                              </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-  </section> -->
-
   <section style="background-color: #eee;">
     <div class="container py-5">
       <div class="row">
         <div class="col">
           <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
             <ol class="breadcrumb mb-0">
-              <li class="breadcrumb-item"><a href="/">Index</a></li>
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
               <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
             </ol>
           </nav>
         </div>
       </div>
-  
       <div class="row">
         <div class="col-lg-4">
           <div class="card mb-4">
@@ -59,119 +24,58 @@
               <p class="text-muted mb-1">{{user.email}}</p>
               <p class="text-muted mb-2">Último Ingreso: {{user.last_login}}</p>
               <div class="d-flex justify-content-center mb-2">
-                <button type="button" class="btn btn-primary">Mis Reservas</button>
-                <button type="button" class="btn btn-outline-primary ms-1" onclick="window.location.href='/password-change';">Modificar contraseña</button>
-             </div>
+                {% if user.is_admin %}
+                <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/statistic';">Estadisticas</button>
+                <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/booking/all';">Todas las reservas</button>
+
+                {% else %}
+                <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/booking/details';">Mis Reservas</button>
+                <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/booking/new';">Reservar turno</button>
+                {% endif %}
+              </div>
             </div>
           </div>
-          <!-- <div class="card mb-4 mb-lg-0">
-            <div class="card-body p-0">
-              <ul class="list-group list-group-flush rounded-3">
-                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                  <i class="fas fa-globe fa-lg text-warning"></i>
-                  <p class="mb-0">https://mdbootstrap.com</p>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                  <i class="fab fa-github fa-lg" style="color: #333333;"></i>
-                  <p class="mb-0">mdbootstrap</p>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                  <i class="fab fa-twitter fa-lg" style="color: #55acee;"></i>
-                  <p class="mb-0">@mdbootstrap</p>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                  <i class="fab fa-instagram fa-lg" style="color: #ac2bac;"></i>
-                  <p class="mb-0">mdbootstrap</p>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                  <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
-                  <p class="mb-0">mdbootstrap</p>
-                </li>
-              </ul>
-              
-            </div>
-          </div> -->
         </div>
         <div class="col-lg-8">
           <div class="card mb-4">
             <div class="card-body">
-              <!-- <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Full Name</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="text-muted mb-0">Johnatan Smith</p>
-                </div>
-              </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Email</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="text-muted mb-0">example@example.com</p>
-                </div>
-              </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Phone</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="text-muted mb-0">(097) 234-5678</p>
-                </div>
-              </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Mobile</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="text-muted mb-0">(098) 765-4321</p>
-                </div>
-              </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Address</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="text-muted mb-0">Bay Area, San Francisco, CA</p>
-                </div> -->
-
                 <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
-                    <div class="mb-4">
+                    <div class="mb-4" >
                           {% csrf_token %}
-                          {{user_form|crispy}} 
-                         <!--  
-                          {% if user.birth is not null %}
-                          <div class="form-row">
-                                <div class="form-group">
-                                    <label class="small mb-1" for="id_old_password">Fecha de nacimiento</label>
-                                        {{user.birth}}
-                                    <span>
-                                    </span>
-                                </div>
-                            
-                        </div>
+                          {{ user_form|crispy }}
 
-
-                        {% else %}
-                        {% csrf_token %}
-                        
-                          {{ user_form.birth }}
-
-                        {% endif %}
-                           -->
-            
-                    </div>
-                    <div class="mb-3">
-                      <div class="d-flex align-items-center">
-                          <button type="submit" class="btn btn-primary ms-4">Guardar cambios</button>
-                          <button type="reset" class="btn btn-primary ms-4">Resetear</button>
-                      </div>
+                          <!-- <label class="requiredField" placeholder="Username">Nombre de usuario: </label>
+                          <input class="form-control" type="text" placeholder="{{user.username}}"disabled>
+                          <label class="requiredField" placeholder="email">E-mail: </label>
+                          <input class="form-control" type="text" placeholder="{{user.email}}"disabled>  -->
+                          <!-- {% if user.birth is not null %}
+                          {{ user_form.first_name|as_crispy_field }}
+                          {{ user_form.last_name|as_crispy_field }}
+                          {{ user_form.cellphone_number|as_crispy_field }}
+                          {{ user_form.barrio|as_crispy_field }}
+                          {{ user_form.genre|as_crispy_field }}
+                          <label class="requiredField" placeholder="Fecha de nacimiento">Fecha de nacimiento</label>
+                          <input class="form-control" type="text" placeholder="{{user.birth}}"disabled>
+                         </div>
+                          {% elif user.birth is null%}
+                          {% csrf_token %}
+                          {{ user_form.first_name|as_crispy_field }}
+                          {{ user_form.last_name|as_crispy_field }}
+                          {{ user_form.cellphone_number|as_crispy_field }}
+                          {{ user_form.barrio|as_crispy_field }}
+                          {{ user_form.genre|as_crispy_field }}
+                          {{ user_form.birth |as_crispy_field }}  
+                        {% endif %} -->
+                          
                     </div>
                 </form>
+
+                <div class="mb-3">
+                  <div class="d-flex align-items-center">
+                      <button type="submit" class="btn btn-primary ms-4">Guardar cambios</button>
+                      <button type="button" class="btn btn-primary mx-3" onclick="window.location.href='/password-change';" style=" background-color:white;font-weight:500;border-width: 1px;border-style: solid; border-color:#ef0aa8; color:black"href="/booking/new/">Modificar contraseña</button>
+                    </div>
+                </div>
               </div>
             </div>
           </div>

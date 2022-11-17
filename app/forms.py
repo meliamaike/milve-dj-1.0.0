@@ -118,14 +118,9 @@ class BookingForm(forms.ModelForm):
 
 # Interacts with the user model to let users update their username and email.
 class UpdateUserForm(forms.ModelForm):
-    """username = forms.CharField(max_length=100,
-                               required=True,
-                               widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.EmailField(required=True,
-                             widget=forms.TextInput(attrs={'class': 'form-control'}))"""
 
     birth = forms.DateField(
-        label="Fecha de Nacimiento", required=True, widget=DateInput
+        label="Fecha de Nacimiento", required=False, widget=DateInput
     )
 
     class Meta:

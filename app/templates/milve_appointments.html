@@ -1,40 +1,7 @@
-{% extends "header.html" %}
+{% extends "base.html" %}
 {% block title %}Profile Page{% endblock title %}
 {% block content %}
 {% load crispy_forms_tags %}
-<!-- 
-<section class="h-50" id="login-seccion">
-    <div class="container h-100">
-        <div class="row justify-content-lg-center h-100">
-            <div class="col-xxl-5 col-xl-7 col-lg-7 col-md-7 col-sm-9">
-                <div class="card shadow-lg">
-                    <div class="card-body p-5">
-                        <h1 class="fs-4 card-title fw-bold mb-4">Mi Perfil</h1>
-                        <div class="image-container mx-auto mb-4">
-                        <img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image" alt="img-pic" id="id_profile_image" src="{{user.profile_image.url}}">
-                        </div>
-                        <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
-                            <div class="mb-4">
-                                  {% csrf_token %}
-                                  {{ user_form|crispy}}                                  
-                                  <div class="text-right">
-                                    <a href="{% url 'app:password_change' %}" >Cambiar contraseña?</a>
-                                  </div>
-                                  
-                            </div>
-                            <div class="mb-3">
-                              <div class="d-flex align-items-center">
-                                  <button type="submit" class="btn btn-primary ms-4">Guardar cambios</button>
-                                  <button type="reset" class="btn btn-primary ms-4">Resetear</button>
-                              </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-  </section> -->
 
   <section style="background-color: #eee;">
     <div class="container py-5">

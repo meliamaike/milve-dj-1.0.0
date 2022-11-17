@@ -37,7 +37,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
-
+import datetime
 
 # Vistas
 
@@ -64,20 +64,7 @@ def Index(request):
     form = ContactForm()
     return render(request, "home.html", {"form": form})
 
-def details_appointment(request):
-    return render(
-        request=request, template_name="appointment_details.html"
-    )
 
-def cancel_appointment(request):
-    return render(
-        request=request, template_name="appointment_cancel.html"
-    )
-
-def statistics(request):
-    return render(
-        request=request, template_name="statistics.html"
-    )
 
 def register_request(request):
     user = request.user
@@ -216,8 +203,7 @@ class EmployeeList(ListView):
 
 class BookingListView(ListView):
     model = Booking
-    template_name = "booking_list_view.html"
-
+    template_name = "appointment_details.html"
     def get_queryset(self, *args, **kwargs):
         if self.request.user.is_staff:
             booking_list = Booking.objects.all()
@@ -226,6 +212,23 @@ class BookingListView(ListView):
             booking_list = Booking.objects.filter(user=self.request.user)
             return booking_list
 
+def details_appointment(request):
+    return render(
+        request=request, template_name="appointment_details.html"
+    )
+
+def cancel_appointment(request):
+    return render(
+        request=request, template_name="appointment_cancel.html"
+    )
+
+def statistics(request):
+    return render(
+        request=request, template_name="statistics.html"
+    )
+
+def all_appointment(request):
+    return render(request=request, template_name="appointment_all.html")
 
 class ServiceDetailView(View):
     def get(self, request, *args, **kwargs):
@@ -264,47 +267,16 @@ class ServiceDetailView(View):
             booking = book_service(request, available_services[0], data["check_in"])
             return HttpResponse(booking)
         else:
-            return HttpResponse("Este servicio se encuentra lleno.")
+            messages.info(request, "Este servicio se encuentra lleno.")
+            return render("/booking/new")
 
 
 class CancelBookingView(DeleteView):
     model = Booking
-    template_name = "booking_cancel_view.html"
+    template_name="appointment_cancel.html"    
     success_url = reverse_lazy("app:BookingListView")
-
-
-import datetime
-
-
-def generate_daylist():
-    daylist = []
-    today = datetime.date.today()
-    for i in range(7):
-        day = {}
-        curr_day = today + datetime.timedelta(days=i)
-        weekday = curr_day.strftime("%A").upper()
-        day["date"] = str(curr_day)
-        day["day"] = weekday
-        day["A_booked"] = (
-            Booking.objects.filter(date=str(curr_day)).filter(timeslot="A").exists()
-        )
-        day["B_booked"] = (
-            Booking.objects.filter(date=str(curr_day)).filter(timeslot="B").exists()
-        )
-        day["C_booked"] = (
-            Booking.objects.filter(date=str(curr_day)).filter(timeslot="C").exists()
-        )
-        day["D_booked"] = (
-            Booking.objects.filter(date=str(curr_day)).filter(timeslot="D").exists()
-        )
-        day["E_booked"] = (
-            Booking.objects.filter(date=str(curr_day)).filter(timeslot="E").exists()
-        )
-        day["F_booked"] = (
-            Booking.objects.filter(date=str(curr_day)).filter(timeslot="F").exists()
-        )
-    return daylist
-
+    success_message = "Se ha cancelado el turno."
+    
 
 def new_appointment(request):
     turn_form = BookingForm
@@ -335,16 +307,18 @@ def new_appointment(request):
                     #form.save()
                     return redirect('/')
                 else:
-                    return HttpResponse("Este horario esta ocupado!")
+                    messages.success(request, "Este horario esta ocupado.")
+                    return redirect('/booking/new/')
             else:
-                return HttpResponse("No existen turnos disponibles este dia!")
+                messages.success(request, "No existen turnos disponibles este dia") 
+                return redirect('/booking/new/') 
     return render(
         request=request,
         template_name="appointment_form.html",
         context={"form": form},
     )
 
-from datetime import datetime, timedelta
+
 def check_day_availability(date):
     
     turn_list = Booking.objects.all()
@@ -387,10 +361,9 @@ def book_service(request, date, timeslot, service_id, user_id):
         timeslot=timeslot,
         service_id=service_id,
         user_id = user_id
-        #user_id= request.user.id
     )
     turn.save()
-
+    messages.success(request, "Se ha realizado la reserva correctamente.")
     return turn
 
 

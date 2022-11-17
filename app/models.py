@@ -205,13 +205,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             str(self.profile_image).index("profile_images/" + str(self.pk) + "/") :
         ]
 
-"""  # Para checkear permisos. Todos los ADMINS tienen TODOS los permisos.
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    # Tiene el usuario los permisos para acceder a esta aplicacion?
-    def has_module_perms(self, app_label):
-        return True """
 
 #Service
 class Service(models.Model):
@@ -227,7 +220,6 @@ class Service(models.Model):
     )
 
     category = models.CharField(max_length=50, choices=SERVICE_CATEGORIES)
-    """ category = models.CharField(_("categoria"), max_length=50) """
     duration = models.PositiveBigIntegerField(_("duracion"))
 
     def __str__(self):
@@ -269,8 +261,8 @@ class Booking(models.Model):
         unique_together = ("user", "date", "timeslot")
 
     def __str__(self):
-        return "{} {} {} . Cliente: {}".format(
-            self.date, self.service, self.timeslot, self.user
+        return "Fecha: {}, Servicio: {}, Horario{}-->Cliente: {}".format(
+            self.date, self.service, self.get_timeslot_display(), self.user
         )
 
     @property

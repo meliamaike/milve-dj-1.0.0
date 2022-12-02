@@ -151,7 +151,7 @@ def password_reset_request(request):
                     # return redirect("/password_reset/done/")
                     messages.success(
                         request,
-                        "A message with reset password instructions has been sent to your inbox.",
+                        "Se te ha enviado un e-mail con las instrucciones para poder resetear la contraseña.",
                     )
                     return redirect("app:index")
     password_reset_form = PasswordResetForm()

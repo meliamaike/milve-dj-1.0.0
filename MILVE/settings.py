@@ -67,6 +67,7 @@ INSTALLED_APPS = [
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -77,8 +78,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # DateTimeWidget
     "django.middleware.locale.LocaleMiddleware",
-    
 ]
+
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`

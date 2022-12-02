@@ -37,5 +37,4 @@ urlpatterns = [
     path("employee_list/", EmployeeList.as_view(), name="EmployeeList"),
     path("service_list/", ServiceListView, name="ServiceListView"),
     path("service/<category>", ServiceDetailView.as_view(), name="ServiceDetailView"),
-   
 ]

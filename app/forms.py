@@ -17,10 +17,12 @@ class AvailabilityForm(forms.Form):
 
 
 class RegistrationForm(SignupForm):
-    username = forms.CharField(max_length=50, label=_("Nombre de usuario"), required=True, 
-    widget=forms.TextInput(
-            attrs={"placeholder": _("Nombre de usuario")}
-        ),)
+    username = forms.CharField(
+        max_length=50,
+        label=_("Nombre de usuario"),
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": _("Nombre de usuario")}),
+    )
     email = forms.EmailField(
         max_length=50,
         label=_("Correo electrónico"),
@@ -50,12 +52,10 @@ class RegistrationForm(SignupForm):
             "password1",
             "password2",
         )
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['email'].label = 'Correo electrónico*'
-
-
+        self.fields["email"].label = "Correo electrónico*"
 
     def save(self, request):
         user = super(RegistrationForm, self).save(request)
@@ -89,16 +89,11 @@ class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = (
-            
             "service",
             "date",
             "timeslot",
         )
-        labels = {
-            
-            "service": "Servicio",
-            "timeslot": "Horario"
-        }
+        labels = {"service": "Servicio", "timeslot": "Horario"}
 
     def clean_date(self):
         day = self.cleaned_data["date"]
@@ -116,7 +111,8 @@ class BookingForm(forms.ModelForm):
         return day
 
 
-# Interactua con el modelo User para poder hacer el update de los datos. 
+# Interactua con el modelo User para poder hacer el update de los datos.
+
 
 class UpdateUserForm(forms.ModelForm):
 

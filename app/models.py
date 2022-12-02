@@ -71,9 +71,9 @@ class Barrio(models.Model):
     )
 
     category = models.CharField(max_length=30, choices=BARRIO_CATEGORIES)
-    
+
     def __str__(self):
-        return str(self.category) 
+        return str(self.category)
 
 
 class Genre(models.Model):
@@ -86,7 +86,6 @@ class Genre(models.Model):
 
     role = models.CharField(max_length=50, choices=Role.choices)
 
-    
     def __str__(self):
         return self.role
 
@@ -130,6 +129,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
 # Profile pic
 def get_profile_image_filepath(self):
     return f'profile_images/{self.pk}/{"profile_image.png"}'
@@ -138,7 +138,10 @@ def get_profile_image_filepath(self):
 def get_default_profile_image():
     return "empty.png"
 
+
 from django.contrib.auth.models import PermissionsMixin
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(
         verbose_name="Nombre de usuario", max_length=50, unique=True
@@ -162,10 +165,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     cellphone_number = models.CharField(
         max_length=20, verbose_name="Número de teléfono", blank=True, unique=False
     )
-    barrio = models.ForeignKey(Barrio, on_delete=models.SET_NULL, verbose_name="Barrio", blank=True, null=True)
+    barrio = models.ForeignKey(
+        Barrio, on_delete=models.SET_NULL, verbose_name="Barrio", blank=True, null=True
+    )
     genre = models.ForeignKey(
         Genre, on_delete=models.SET_NULL, verbose_name="Género", blank=True, null=True
-    ) 
+    )
     address = models.CharField(max_length=50, verbose_name="Dirección", blank=True)
     birth = models.DateField(verbose_name="Fecha de Nacimiento", blank=True, null=True)
     profile_image = models.ImageField(
@@ -186,7 +191,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
-
     # Metodo para guardar todo
     def save(self, *args, **kwargs):
         is_adding = self._state.adding
@@ -206,7 +210,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ]
 
 
-#Service
+# Service
 class Service(models.Model):
     SERVICE_CATEGORIES = (
         ("gel_nail", "Gel nail"),
@@ -225,6 +229,7 @@ class Service(models.Model):
 
     def __str__(self):
         return f"{self.category}"
+
 
 class Booking(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -273,6 +278,7 @@ class Booking(models.Model):
                 self.pk,
             ],
         )
+
 
 class Employee(models.Model):
     EMPLOYEE_CATEGORIES = (

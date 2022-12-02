@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import ListView, FormView, View, DeleteView
 from django.urls import reverse, reverse_lazy
 from requests import request
-from .models import  Booking, Service, User, Employee
+from .models import Booking, Service, User, Employee
 from .forms import (
     AvailabilityForm,
     RegistrationForm,
@@ -37,7 +37,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
-import datetime
+from datetime import date
 
 # Vistas
 
@@ -63,7 +63,6 @@ def Index(request):
 
     form = ContactForm()
     return render(request, "home.html", {"form": form})
-
 
 
 def register_request(request):
@@ -204,40 +203,47 @@ class EmployeeList(ListView):
 class BookingListView(ListView):
     model = Booking
     template_name = "appointment_details.html"
+
     def get_queryset(self, *args, **kwargs):
         if self.request.user.is_staff:
-            booking_list = Booking.objects.all()
+            booking_list = Booking.objects.filter(date__gte=date.today()).order_by(
+                "date", "timeslot"
+            )
             return booking_list
         else:
-            booking_list = Booking.objects.filter(user=self.request.user)
+            booking_list = Booking.objects.filter(
+                user=self.request.user, date__gte=date.today()
+            ).order_by("date", "timeslot")
             return booking_list
+
 
 class AllBookingListView(ListView):
     model = Booking
     template_name = "appointment_all.html"
+
     def get_queryset(self, *args, **kwargs):
         if self.request.user.is_staff:
-            booking_list = Booking.objects.all()
+            booking_list = Booking.objects.filter(date__gte=date.today()).order_by(
+                "date", "timeslot"
+            )
             return booking_list
-        
+
 
 def details_appointment(request):
-    return render(
-        request=request, template_name="appointment_details.html"
-    )
+    return render(request=request, template_name="appointment_details.html")
+
 
 def cancel_appointment(request):
-    return render(
-        request=request, template_name="appointment_cancel.html"
-    )
+    return render(request=request, template_name="appointment_cancel.html")
+
 
 def statistics(request):
-    return render(
-        request=request, template_name="statistics.html"
-    )
+    return render(request=request, template_name="statistics.html")
+
 
 def all_appointment(request):
     return render(request=request, template_name="appointment_all.html")
+
 
 class ServiceDetailView(View):
     def get(self, request, *args, **kwargs):
@@ -282,15 +288,15 @@ class ServiceDetailView(View):
 
 class CancelBookingView(DeleteView):
     model = Booking
-    template_name="appointment_cancel.html"    
+    template_name = "appointment_cancel.html"
     success_url = reverse_lazy("app:BookingListView")
     success_message = "Se ha cancelado el turno."
-    
+
 
 def new_appointment(request):
     turn_form = BookingForm
     form = turn_form(request.POST or None)
-    if request.method == 'POST':
+    if request.method == "POST":
         if form.is_valid():
             data = form.cleaned_data
             available_day_turn = check_day_availability(
@@ -307,20 +313,20 @@ def new_appointment(request):
                     print(data["service"].id)
 
                     book_service(
-                    request, 
-                    data["date"],
-                    data["timeslot"],
-                    data["service"].id,
-                    request.user.id,
+                        request,
+                        data["date"],
+                        data["timeslot"],
+                        data["service"].id,
+                        request.user.id,
                     )
-                    #form.save()
-                    return redirect('/')
+                    # form.save()
+                    return redirect("/")
                 else:
-                    messages.success(request, "Este horario esta ocupado.")
-                    return redirect('/booking/new/')
+                    messages.error(request, "Este horario esta ocupado.")
+                    return redirect("/booking/new/")
             else:
-                messages.success(request, "No existen turnos disponibles este dia") 
-                return redirect('/booking/new/') 
+                messages.success(request, "No existen turnos disponibles este dia")
+                return redirect("/booking/new/")
     return render(
         request=request,
         template_name="appointment_form.html",
@@ -329,32 +335,29 @@ def new_appointment(request):
 
 
 def check_day_availability(date):
-    
+
     turn_list = Booking.objects.all()
-    cont=0
+    cont = 0
 
     for t in turn_list:
-        if t.date==date:
-            cont=cont+1
-            
-    if cont == 7:  
+        if t.date == date:
+            cont = cont + 1
+
+    if cont == 7:
         return False
     else:
         return True
-    
-    
-    
 
-def check_availability(date,timeslot):
-    
+
+def check_availability(date, timeslot):
+
     turn = Booking.objects.all()
-    new_turn= None
-    
+    new_turn = None
+
     for t in turn:
-        if t.date==date and t.timeslot == timeslot:
+        if t.date == date and t.timeslot == timeslot:
             new_turn = t
-           
-    
+
     if new_turn != None:
         return False
     else:
@@ -366,10 +369,7 @@ def book_service(request, date, timeslot, service_id, user_id):
 
     print(request.user.id)
     turn = Booking.objects.create(
-        date=date,
-        timeslot=timeslot,
-        service_id=service_id,
-        user_id = user_id
+        date=date, timeslot=timeslot, service_id=service_id, user_id=user_id
     )
     turn.save()
     messages.success(request, "Se ha realizado la reserva correctamente.")
@@ -394,7 +394,7 @@ def profile(request):
     )
 
 
-# Change Pass from profile
+# Cambiar la password desde "Mi Perfil"
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
     template_name = "change_password.html"
     success_message = "Se ha actualizado exitosamente la contraseña."

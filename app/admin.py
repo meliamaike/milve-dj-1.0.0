@@ -49,7 +49,8 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
-admin.site.register(User,CustomUserAdmin)
+
+admin.site.register(User, CustomUserAdmin)
 
 # Service
 @admin.register(Service)
@@ -77,12 +78,14 @@ class EmployeeAdmin(admin.ModelAdmin):
     list_display_links = ("employee",)
     list_per_page = 5
 
+
 @admin.register(Barrio)
 class BarrioAdmin(admin.ModelAdmin):
     list_display = ("id", "category")
     ordering = ("id",)
     list_display_links = ("category",)
     list_per_page = 15
+
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
